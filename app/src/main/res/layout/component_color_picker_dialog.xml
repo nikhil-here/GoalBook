@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/component_color_picker_dialog_ll_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:orientation="vertical"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:text="Choose Your Color" />
+
+
+    <RadioGroup
+        android:id="@+id/component_color_picker_dialog_rg_colors"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:paddingLeft="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/component_color_picker_dialog_rb_red"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="4dp"
+
+            android:button="@android:color/transparent"
+            android:background="@drawable/color_picker_rb_bg"
+            android:backgroundTint="@color/lightRed"
+         />
+
+        <RadioButton
+            android:id="@+id/component_color_picker_dialog_rb_yellow"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="4dp"
+            android:button="@color/lightYellow"
+            android:background="@drawable/color_picker_rb_bg"
+            android:backgroundTint="@color/lightYellow"
+            />
+
+        <RadioButton
+            android:id="@+id/component_color_picker_dialog_rb_green"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="4dp"
+            android:button="@android:color/transparent"
+            android:background="@drawable/color_picker_rb_bg"
+            android:backgroundTint="@color/lightGreen"/>
+
+        <RadioButton
+            android:id="@+id/component_color_picker_dialog_rb_blue"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="4dp"
+            android:button="@android:color/transparent"
+            android:background="@drawable/color_picker_rb_bg"
+            android:backgroundTint="@color/lightBlue"/>
+
+        <RadioButton
+            android:id="@+id/component_color_picker_dialog_rb_violet"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="4dp"
+            android:button="@android:color/transparent"
+            android:background="@drawable/color_picker_rb_bg"
+            android:backgroundTint="@color/lightViolet"/>
+
+
+
+        <RadioButton
+            android:id="@+id/component_color_picker_dialog_rb_grey"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="4dp"
+            android:button="@android:color/transparent"
+            android:background="@drawable/color_picker_rb_bg"
+            android:backgroundTint="@color/lightGrey"/>
+
+        <RadioButton
+            android:id="@+id/component_color_picker_dialog_rb_black"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="4dp"
+            android:button="@android:color/transparent"
+            android:background="@drawable/color_picker_rb_bg"
+            android:backgroundTint="@color/lightBlack"/>
+
+    </RadioGroup>
+
+</LinearLayout>

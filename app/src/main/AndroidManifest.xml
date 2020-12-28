@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GoalBook">
-        <activity android:name=".LoginAndRegistration.CongratualtionActivity"></activity>
+        <activity android:name=".AddGoal.AddGoalActivity" android:theme="@style/AddGoal" android:parentActivityName=".HomeScreen.MainActivity"></activity>
+        <activity android:name=".ViewGoals.ViewGoalsActivity" />
+        <activity android:name=".LoginAndRegistration.CongratualtionActivity" />
         <activity android:name=".LoginAndRegistration.OTPActivity" />
         <activity android:name=".LoginAndRegistration.LoginActivity" />
         <activity android:name=".LoginAndRegistration.RegistrationActivity" />

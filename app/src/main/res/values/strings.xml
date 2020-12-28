@@ -18,4 +18,8 @@
     <string name="otp_constraints">Please enter the OTP received on your mobile </string>
     <string name="congratulation_msg">Congratulations<br />Registration Successful</string>
     <!--    -->
+
+    <!--  For Edittext Validation  -->
+    <!--  following string contains white space for allowing space as input  -->
+    <string name="validation_edittext_digits">ab cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 </resources>

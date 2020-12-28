@@ -25,7 +25,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.application.goalbook.AddGoal.AddGoalActivity;
 import com.application.goalbook.R;
+import com.application.goalbook.ViewGoals.ViewGoalsActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
@@ -34,9 +36,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener {
 
     private View decorview;
+    private TextView tvAllGoals;
     private ExtendedFloatingActionButton efabAddGoal;
-    private NestedScrollView scrollView;
-    private LinearLayout llContainer;
 
     //For Ads
     private TextView[] tvAdSlider;
@@ -68,6 +69,20 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
             setGoals();
             initAdSlider(0);
             initGoalSlider(0);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.activity_main_efab_add_goals:
+                Intent addGoalIntent = new Intent(MainActivity.this, AddGoalActivity.class);
+                startActivity(addGoalIntent);
+                break;
+            case R.id.activity_main_tv_all_goals:
+                Intent viewGoalsIntent = new Intent(MainActivity.this, ViewGoalsActivity.class);
+                startActivity(viewGoalsIntent);
+                break;
         }
     }
 
@@ -182,14 +197,12 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         efabAddGoal = findViewById(R.id.activity_main_efab_add_goals);
         llAdsSlider = findViewById(R.id.activity_main_ll_ads_slider);
         llGoalsSlider = findViewById(R.id.activity_main_ll_goals_slider);
-        llContainer = findViewById(R.id.activity_main_ll_container);
-        scrollView = findViewById(R.id.activity_main_sv);
+        tvAllGoals = findViewById(R.id.activity_main_tv_all_goals);
     }
 
     private void initListeners() {
         efabAddGoal.setOnClickListener(this);
-
-
+        tvAllGoals.setOnClickListener(this);
     }
 
 
@@ -218,14 +231,4 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
         return i;
     }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.activity_main_efab_add_goals:
-                break;
-        }
-    }
-
-
 }

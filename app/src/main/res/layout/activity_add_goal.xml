@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    tools:context=".AddGoal.AddGoalActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="80dp">
+
+            <!--Cover Image-->
+            <ImageView
+                android:id="@+id/activity_add_goal_iv_goal_cover"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@drawable/cover_shadow"
+                android:elevation="16dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/activity_add_goal_ll_add_cover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@id/activity_add_goal_iv_goal_cover"
+                app:layout_constraintLeft_toLeftOf="@id/activity_add_goal_iv_goal_cover"
+                app:layout_constraintRight_toRightOf="@id/activity_add_goal_iv_goal_cover"
+                app:layout_constraintTop_toTopOf="@id/activity_add_goal_iv_goal_cover">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_camera" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="Add Cover"
+                    android:textColor="@color/blackVariant" />
+            </LinearLayout>
+            <!--Cover Image Ends -->
+
+            <!-- Goal Title  -->
+
+            <View
+                android:id="@+id/activity_add_goal_view_title"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginLeft="16dp"
+                android:background="@color/lightRed"
+                app:layout_constraintBottom_toBottomOf="@id/activity_add_goal_et_goal_title"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/activity_add_goal_et_goal_title" />
+
+            <EditText
+                android:id="@+id/activity_add_goal_et_goal_title"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginRight="4dp"
+                android:background="@color/lightGrey"
+                android:digits="@string/validation_edittext_digits"
+                android:fontFamily="@font/roboto_medium"
+                android:hint="Title"
+                android:imeOptions="actionNext"
+                android:inputType="textCapWords"
+                android:maxLength="34"
+                android:maxLines="1"
+                android:paddingHorizontal="10dp"
+                android:singleLine="true"
+                android:textColor="@color/blackVariant"
+                android:textCursorDrawable="@null"
+                android:textSize="16dp"
+                android:screenReaderFocusable="false"
+                app:layout_constraintLeft_toRightOf="@id/activity_add_goal_view_title"
+                app:layout_constraintRight_toLeftOf="@id/activity_add_goal_view_color_picker"
+                app:layout_constraintTop_toBottomOf="@id/activity_add_goal_iv_goal_cover" />
+
+            <View
+                android:id="@+id/activity_add_goal_view_color_picker"
+                android:layout_width="40dp"
+                android:layout_height="0dp"
+                android:layout_marginRight="26dp"
+                android:background="@drawable/color_picker_bg"
+                app:layout_constraintBottom_toBottomOf="@id/activity_add_goal_et_goal_title"
+                app:layout_constraintLeft_toRightOf="@id/activity_add_goal_et_goal_title"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/activity_add_goal_et_goal_title" />
+
+
+            <EditText
+                android:id="@+id/activity_add_goal_et_goal_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@color/lightGrey"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="start"
+                android:hint="Start Writing here..."
+                android:imeOptions="actionNone"
+                android:inputType="textMultiLine"
+                android:minHeight="260dp"
+                android:padding="10dp"
+                android:singleLine="false"
+                android:textColor="@color/blackVariant"
+                android:textCursorDrawable="@null"
+                android:textSize="14dp"
+                app:layout_constraintLeft_toLeftOf="@id/activity_add_goal_view_title"
+                app:layout_constraintRight_toRightOf="@id/activity_add_goal_view_color_picker"
+                app:layout_constraintTop_toBottomOf="@id/activity_add_goal_et_goal_title" />
+
+
+            <View
+                android:id="@+id/activity_add_goal_view_add_tag"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginLeft="16dp"
+                android:background="@color/lightRed"
+                app:layout_constraintBottom_toBottomOf="@id/activity_add_goal_et_tags"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/activity_add_goal_tv_add_tag" />
+
+            <TextView
+                android:id="@+id/activity_add_goal_tv_add_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Add Tags"
+                android:textColor="@color/blackVariant"
+                app:layout_constraintLeft_toRightOf="@id/activity_add_goal_view_add_tag"
+                app:layout_constraintTop_toBottomOf="@id/activity_add_goal_et_goal_description" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/activity_add_goal_cg_tags"
+                style="@style/Widget.MaterialComponents.ChipGroup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="4dp"
+                app:checkedChip="@id/activity_add_goal_chip_reminder_none"
+                app:layout_constraintLeft_toRightOf="@id/activity_add_goal_view_add_tag"
+                app:layout_constraintRight_toRightOf="@id/activity_add_goal_et_goal_title"
+                app:layout_constraintTop_toBottomOf="@id/activity_add_goal_tv_add_tag"
+                app:selectionRequired="true"
+                app:singleSelection="true"></com.google.android.material.chip.ChipGroup>
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/activity_add_goal_et_tags"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="4dp"
+                android:background="@null"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="start"
+                android:hint="Start Writing here..."
+                android:imeOptions="actionDone"
+                android:inputType="textMultiLine"
+                android:maxLines="1"
+                android:paddingVertical="10dp"
+                android:singleLine="true"
+                android:textColor="@color/blackVariant"
+                android:textCursorDrawable="@null"
+                android:textSize="14dp"
+                app:layout_constraintLeft_toLeftOf="@id/activity_add_goal_tv_add_tag"
+                app:layout_constraintRight_toRightOf="@id/activity_add_goal_view_color_picker"
+                app:layout_constraintTop_toBottomOf="@id/activity_add_goal_cg_tags" />
+
+
+            <View
+                android:id="@+id/activity_add_goal_view_start_end_date"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginLeft="16dp"
+                android:background="@color/lightRed"
+                app:layout_constraintBottom_toBottomOf="@id/activity_add_goal_tv_goal_Start_end_date"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/activity_add_goal_tv_timeline" />
+
+            <TextView
+                android:id="@+id/activity_add_goal_tv_timeline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="24dp"
+                android:drawableRight="@drawable/ic_calendar"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="center_vertical"
+                android:minHeight="34dp"
+                android:text="Start Date - End Date"
+                android:textColor="@color/blackVariant"
+                app:layout_constraintLeft_toRightOf="@id/activity_add_goal_view_add_tag"
+                app:layout_constraintRight_toRightOf="@id/activity_add_goal_et_goal_description"
+                app:layout_constraintTop_toBottomOf="@id/activity_add_goal_et_tags" />
+
+            <TextView
+                android:id="@+id/activity_add_goal_tv_goal_Start_end_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="center_vertical"
+                android:textColor="@color/blackVariant"
+                app:layout_constraintLeft_toRightOf="@id/activity_add_goal_view_add_tag"
+                app:layout_constraintRight_toRightOf="@id/activity_add_goal_et_goal_description"
+                app:layout_constraintTop_toBottomOf="@id/activity_add_goal_tv_timeline"
+                tools:text="26 Dec 20 To 28 Dec 21" />
+
+            <View
+                android:id="@+id/activity_add_goal_view_reminder_frequencey"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginLeft="16dp"
+                android:background="@color/lightRed"
+                app:layout_constraintBottom_toBottomOf="@id/activity_add_goal_cg_reminders"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/activity_add_goal_tv_reminder_frequency" />
+
+            <TextView
+                android:id="@+id/activity_add_goal_tv_reminder_frequency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Reminder Frequency"
+                android:textColor="@color/blackVariant"
+                app:layout_constraintLeft_toRightOf="@id/activity_add_goal_view_add_tag"
+                app:layout_constraintTop_toBottomOf="@id/activity_add_goal_view_start_end_date" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/activity_add_goal_cg_reminders"
+                style="@style/Widget.MaterialComponents.ChipGroup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="4dp"
+                app:checkedChip="@id/activity_add_goal_chip_reminder_none"
+                app:layout_constraintLeft_toRightOf="@id/activity_add_goal_view_reminder_frequencey"
+                app:layout_constraintRight_toRightOf="@id/activity_add_goal_view_color_picker"
+                app:layout_constraintTop_toBottomOf="@id/activity_add_goal_tv_reminder_frequency"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/activity_add_goal_chip_reminder_yearly"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yearly"
+                    android:textColor="@color/black"
+                    app:checkedIcon="@drawable/ic_check"
+                    app:checkedIconEnabled="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/activity_add_goal_chip_reminder_monthly"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Monthly"
+                    android:textColor="@color/black"
+                    app:checkedIcon="@drawable/ic_check"
+                    app:checkedIconEnabled="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/activity_add_goal_chip_reminder_weekly"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weekly"
+                    android:textColor="@color/black"
+                    app:checkedIcon="@drawable/ic_check"
+                    app:checkedIconEnabled="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/activity_add_goal_chip_reminder_daily"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Daily"
+                    android:textColor="@color/black"
+                    app:checkedIcon="@drawable/ic_check"
+                    app:checkedIconEnabled="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/activity_add_goal_chip_reminder_none"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="None"
+                    android:textColor="@color/black"
+                    app:checkedIcon="@drawable/ic_check"
+                    app:checkedIconEnabled="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
