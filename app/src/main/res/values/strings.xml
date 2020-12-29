@@ -2,6 +2,7 @@
 
     <!--  For Testing  -->
     <string name="dummy">Lorem ipsum dolor sit amet, consectetur adipisicing elit. At corporis dolorum esse, ex, explicabo facere iste pariatur placeat possimus praesentium sunt veniam. Minus nisi odio possimus tempore tenetur vel, voluptatum. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aperiam autem blanditiis consequuntur cum deserunt dolores, et eveniet inventore laboriosam molestias nobis, non, nulla provident quidem ratione veritatis. Eaque, expedita.</string>
+    <string name="dummy_one_liner">Lorem ipsum dolor sit amet, consectetur adipisicing elit. At corporis dolorum esse</string>
 
     <!--    Splash & Introduction    -->
     <string name="app_name">GoalBook</string>

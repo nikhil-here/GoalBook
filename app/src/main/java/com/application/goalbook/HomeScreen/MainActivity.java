@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import android.Manifest;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,12 +21,14 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Html;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.application.goalbook.AddGoal.AddGoalActivity;
+import com.application.goalbook.Profile.ProfileActivity;
 import com.application.goalbook.R;
 import com.application.goalbook.ViewGoals.ViewGoalsActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -33,10 +36,13 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener {
 
     private View decorview;
-    private TextView tvAllGoals;
+    private TextView tvAllGoals,tvUsername,tvHint;
+    private CircleImageView civProfile;
     private ExtendedFloatingActionButton efabAddGoal;
 
     //For Ads
@@ -75,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.activity_main_civ_profile:
+                jumpToProfile();
+
+                break;
             case R.id.activity_main_efab_add_goals:
                 Intent addGoalIntent = new Intent(MainActivity.this, AddGoalActivity.class);
                 startActivity(addGoalIntent);
@@ -84,6 +94,17 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
                 startActivity(viewGoalsIntent);
                 break;
         }
+    }
+
+    private void jumpToProfile() {
+        Intent profileIntent = new Intent(MainActivity.this, ProfileActivity.class);
+        Pair[] pairs = new Pair[3];
+        pairs[0] = new Pair<View,String>(civProfile,"profile");
+        pairs[1] = new Pair<View,String>(tvUsername,"username");
+        pairs[2] = new Pair<View,String>(tvHint,"hint");
+        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this,pairs);
+        startActivity(profileIntent,activityOptions.toBundle());
+
     }
 
 
@@ -192,6 +213,9 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
 
     private void initViews() {
         decorview = getWindow().getDecorView();
+        civProfile = findViewById(R.id.activity_main_civ_profile);
+        tvUsername = findViewById(R.id.activity_main_tv_username);
+        tvHint = findViewById(R.id.activity_main_tv_hint);
         rvAds = findViewById(R.id.activity_main_rv_ads);
         rvGoals = findViewById(R.id.activity_main_rv_goals);
         efabAddGoal = findViewById(R.id.activity_main_efab_add_goals);
@@ -201,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     }
 
     private void initListeners() {
+        civProfile.setOnClickListener(this);
         efabAddGoal.setOnClickListener(this);
         tvAllGoals.setOnClickListener(this);
     }

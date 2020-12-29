@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Profile.ProfileActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="56dp">
+
+            <ImageView
+                android:id="@+id/activity_profil_iv_settings"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_setting"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/activity_profil_iv_notificaiton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginHorizontal="16dp"
+                android:src="@drawable/ic_notifications"
+                app:layout_constraintBottom_toBottomOf="@id/activity_profil_iv_settings"
+                app:layout_constraintRight_toLeftOf="@id/activity_profil_iv_settings"
+                app:layout_constraintTop_toTopOf="@id/activity_profil_iv_settings" />
+
+            <View
+                android:id="@+id/activity_profile_view_color_picker"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/color_picker_bg"
+                app:layout_constraintBottom_toBottomOf="@id/activity_profil_iv_notificaiton"
+                app:layout_constraintRight_toLeftOf="@id/activity_profil_iv_notificaiton"
+                app:layout_constraintTop_toTopOf="@id/activity_profil_iv_notificaiton" />
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/activity_profile_civ_profile"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_profile"
+                android:transitionName="profile"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/activity_profile_view_color_picker" />
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+                app:layout_constraintBottom_toBottomOf="@id/activity_profile_civ_profile"
+                app:layout_constraintLeft_toRightOf="@id/activity_profile_civ_profile"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/activity_profile_civ_profile">
+
+                <TextView
+                    android:id="@+id/activity_profile_tv_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="John Doe"
+                    android:textColor="@color/blackVariant"
+                    android:textSize="18dp"
+                    android:transitionName="username" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="Reg 12 Jan 2020"
+                    android:textSize="10dp"
+                    android:transitionName="hint" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/activity_profile_tv_about"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="24dp"
+                android:text="About Me"
+                android:textColor="@color/black"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/activity_profile_civ_profile" />
+
+            <View
+                android:id="@+id/activity_profile_view_purpose"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lightRed"
+                app:layout_constraintBottom_toBottomOf="@id/activity_profile_tv_purpose"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/activity_profile_tv_about" />
+
+            <TextView
+                android:id="@+id/activity_profile_tv_purpose"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/lightGrey"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="My Purpose"
+                android:textColor="@color/blackVariant"
+                android:textSize="16dp"
+
+                app:layout_constraintLeft_toRightOf="@id/activity_profile_view_purpose"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/activity_profile_view_purpose" />
+
+            <EditText
+                android:id="@+id/activity_profile_et_purpose"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:background="@color/white"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:fontFamily="@font/roboto_medium"
+                android:inputType="textMultiLine"
+                android:lineSpacingExtra="8dp"
+                android:paddingLeft="10dp"
+                android:text="@string/dummy_one_liner"
+                android:textColor="@color/blackVariant"
+                android:textCursorDrawable="@null"
+                android:textSize="14dp"
+                app:layout_constraintLeft_toLeftOf="@id/activity_profile_view_purpose"
+                app:layout_constraintRight_toRightOf="@id/activity_profile_tv_purpose"
+                app:layout_constraintTop_toBottomOf="@id/activity_profile_tv_purpose" />
+
+
+            <View
+                android:id="@+id/activity_profile_view_vision"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lightRed"
+                app:layout_constraintBottom_toBottomOf="@id/activity_profile_tv_vision"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/activity_profile_et_purpose" />
+
+            <TextView
+                android:id="@+id/activity_profile_tv_vision"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/lightGrey"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="My Vision"
+                android:textColor="@color/blackVariant"
+                android:textSize="16dp"
+                app:layout_constraintLeft_toRightOf="@id/activity_profile_view_vision"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/activity_profile_view_vision" />
+
+            <EditText
+                android:id="@+id/activity_profile_et_vision"
+                android:layout_width="0dp"
+                android:layout_height="140dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/white"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:fontFamily="@font/roboto_medium"
+                android:inputType="textMultiLine"
+                android:lineSpacingExtra="8dp"
+                android:paddingLeft="10dp"
+                android:text="@string/dummy"
+                android:textColor="@color/blackVariant"
+                android:textCursorDrawable="@null"
+                android:textSize="14dp"
+                app:layout_constraintLeft_toLeftOf="@id/activity_profile_view_vision"
+                app:layout_constraintRight_toRightOf="@id/activity_profile_tv_vision"
+                app:layout_constraintTop_toBottomOf="@id/activity_profile_tv_vision" />
+
+
+            <View
+                android:id="@+id/activity_profile_view_mission"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lightRed"
+                app:layout_constraintBottom_toBottomOf="@id/activity_profile_tv_mission"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/activity_profile_et_vision" />
+
+            <TextView
+                android:id="@+id/activity_profile_tv_mission"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/lightGrey"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="My Mission"
+                android:textColor="@color/blackVariant"
+                android:textSize="16dp"
+                app:layout_constraintLeft_toRightOf="@id/activity_profile_view_vision"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/activity_profile_view_mission" />
+
+            <EditText
+                android:id="@+id/activity_profile_et_mission"
+                android:layout_width="0dp"
+                android:layout_height="140dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/white"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:fontFamily="@font/roboto_medium"
+                android:inputType="textMultiLine"
+                android:lineSpacingExtra="8dp"
+                android:paddingLeft="10dp"
+                android:text="@string/dummy"
+                android:textColor="@color/blackVariant"
+                android:textCursorDrawable="@null"
+                android:textSize="14dp"
+                app:layout_constraintLeft_toLeftOf="@id/activity_profile_view_mission"
+                app:layout_constraintRight_toRightOf="@id/activity_profile_tv_vision"
+                app:layout_constraintTop_toBottomOf="@id/activity_profile_view_mission" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

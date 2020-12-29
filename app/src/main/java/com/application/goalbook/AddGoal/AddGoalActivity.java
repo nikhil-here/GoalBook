@@ -41,10 +41,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCheckedChangeListener, TextWatcher, View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
     private View decorview;
+
     private  ImageView ivCover;
     private LinearLayout llCoverPhoto;
     private AppCompatEditText etTags;
