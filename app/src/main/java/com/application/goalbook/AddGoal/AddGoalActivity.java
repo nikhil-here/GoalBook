@@ -7,11 +7,15 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,6 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -30,7 +35,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.application.goalbook.Database.Goal;
+import com.application.goalbook.Database.GoalViewModel;
 import com.application.goalbook.R;
+import com.application.goalbook.Utility.Constants;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -41,16 +49,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import es.dmoral.toasty.Toasty;
 
 
 public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCheckedChangeListener, TextWatcher, View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
     private View decorview;
 
-    private  ImageView ivCover;
+    private ImageView ivCover;
     private LinearLayout llCoverPhoto;
     private AppCompatEditText etTags;
+    private EditText etTitle, etDescription;
     private TextView tvStartEndDate, tvTimeline;
 
 
@@ -59,18 +68,28 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
     private Chip chipYearly, chipMonthly, chipWeekly, chipDaily, chipNone;
 
     //For Color Picker Sheet
+
     private RadioGroup rgColors;
     private View vColorPicker;
+    private String[] colorPalette;
     private View colorPickerSheetLayout;
     private MaterialDatePicker datePicker;
     private BottomSheetDialog colorPickerSheetDialog;
 
     //For Color Strips Views
-    private int selectedColorId = R.color.lightRed;
     private View vTitle, vTag, vTimeline, vReminders;
 
     public static final String TAG = "AddGoalActivity";
     public static final int PICK_IMAGE_GALLERY = 101;
+
+    //Values
+    private ArrayList<String> tags = new ArrayList<>();
+    private Long startDate, endDate;
+    private int status= Constants.STATUS_PENDING, reminderFrequency = Constants.REMINDER_NONE;
+    private String coverImage,title, description, color = "#F0C1C5";
+
+    //Viewmode
+    private GoalViewModel goalViewModel;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -84,17 +103,20 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_goal);
         if (savedInstanceState == null) {
+
+            //initializing goalviewmodel
+            goalViewModel = new ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(GoalViewModel.class);
+
             initActionBar();
             initColorPickerDialog();
+            createColorPalette();
             initViews();
             initListeners();
         }
     }
 
-
     @Override
     public void onClick(View view) {
-
         switch (view.getId()) {
             case R.id.activity_add_goal_tv_timeline:
                 showDateRangePicker();
@@ -108,31 +130,60 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         }
     }
 
-    private void openPhotoPicker() {
-        if (!checkCameraPermission()) {
-            checkAndRequestStorageCameraPermissions();
-        }
-        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_GALLERY && data != null)
-        {
-            ivCover.setImageURI(data.getData());
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_add_goal_save:
-                Toast.makeText(AddGoalActivity.this, "Goal Saved", Toast.LENGTH_SHORT).show();
+                getValues();
+                if (validate())
+                {
+                    Toast.makeText(this, "Validated", Toast.LENGTH_SHORT).show();
+                    saveGoal();
+                }
+                break;
+            case R.drawable.ic_close:
+                finish();
                 break;
         }
         return true;
+    }
+
+    private void saveGoal() {
+        Goal goal = new Goal(coverImage,title,description,tags,color,status,startDate,endDate,reminderFrequency);
+        goalViewModel.insert(goal);
+        finish();
+    }
+
+
+
+    private void getValues() {
+        title = etTitle.getText().toString();
+        description = etDescription.getText().toString();
+        //get tags
+        for(int i = 0; i < cgTags.getChildCount(); i++)
+        {
+            Chip chip = (Chip) cgTags.getChildAt(0);
+            String tag = (String) chip.getChipText();
+            tags.add(tag);
+        }
+        if (coverImage == null)
+        {
+            Uri defaultImageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
+                    "://" + getResources().getResourcePackageName(R.drawable.background)
+                    + '/' + getResources().getResourceTypeName(R.drawable.background) + '/' + getResources().getResourceEntryName(R.drawable.background) );
+            coverImage = defaultImageUri.toString();
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_GALLERY && data != null) {
+            coverImage = data.getData().toString();
+            ivCover.setImageURI(data.getData());
+        }
     }
 
     private void showDateRangePicker() {
@@ -142,8 +193,9 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         datePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>() {
             @Override
             public void onPositiveButtonClick(Pair<Long, Long> selection) {
-                Long startDate = selection.first;
-                Long endDate = selection.second;
+                startDate = selection.first;
+                endDate = selection.second;
+
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM YYYY");
                 tvStartEndDate.setText(dateFormat.format(startDate) + " To " + dateFormat.format(endDate));
             }
@@ -154,79 +206,82 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
     //For Color Picker
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
-        switch (radioGroup.getCheckedRadioButtonId()) {
-            case R.id.component_color_picker_dialog_rb_red:
-                selectedColorId = R.color.lightRed;
-                setViewStripColors(R.color.lightRed);
-                break;
-            case R.id.component_color_picker_dialog_rb_yellow:
-                selectedColorId = R.color.lightYellow;
-                setViewStripColors(R.color.lightYellow);
-                break;
-            case R.id.component_color_picker_dialog_rb_green:
-                selectedColorId = R.color.lightGreen;
-                setViewStripColors(R.color.lightGreen);
-                break;
-            case R.id.component_color_picker_dialog_rb_blue:
-                selectedColorId = R.color.lightBlue;
-                setViewStripColors(R.color.lightBlue);
-                break;
-            case R.id.component_color_picker_dialog_rb_violet:
-                selectedColorId = R.color.lightViolet;
-                setViewStripColors(R.color.lightViolet);
-                break;
-            case R.id.component_color_picker_dialog_rb_grey:
-                selectedColorId = R.color.lightGrey;
-                setViewStripColors(R.color.lightGrey);
-                break;
-            case R.id.component_color_picker_dialog_rb_black:
-                selectedColorId = R.color.lightBlack;
-                setViewStripColors(R.color.lightBlack);
-                break;
-        }
+        //get id of checked button
+        int selectedButtonId = radioGroup.getCheckedRadioButtonId();
+        //id indicate position of color in array, getting selected color hash value
+        color = colorPalette[i];
+        setViewStripColors(color);
     }
 
     //For Reminders
     @Override
     public void onCheckedChanged(ChipGroup group, int checkedId) {
 
-        /*switch (checkedId)
+        switch (checkedId)
         {
             case R.id.activity_add_goal_chip_reminder_yearly:
-                Toast.makeText(this,"Reminder is Set to : Yearly",Toast.LENGTH_SHORT).show();
+                reminderFrequency = Constants.REMINDER_YEARLY;
                 break;
             case R.id.activity_add_goal_chip_reminder_monthly:
-                Toast.makeText(this,"Reminder is Set to : Monthly",Toast.LENGTH_SHORT).show();
+                reminderFrequency = Constants.REMINDER_MONTHLY;
                 break;
             case R.id.activity_add_goal_chip_reminder_weekly:
-                Toast.makeText(this,"Reminder is Set to : Weekly",Toast.LENGTH_SHORT).show();
+                reminderFrequency = Constants.REMINDER_WEEKLY;
                 break;
             case R.id.activity_add_goal_chip_reminder_daily:
-                Toast.makeText(this,"Reminder is Set to : Daily",Toast.LENGTH_SHORT).show();
+                reminderFrequency = Constants.REMINDER_DAILY;
                 break;
             case R.id.activity_add_goal_chip_reminder_none:
-                Toast.makeText(this,"Reminder is Set to : None",Toast.LENGTH_SHORT).show();
+                reminderFrequency = Constants.REMINDER_NONE;
                 break;
-        }*/
-    }
-
-    private void setViewStripColors(int colorId) {
-        vTitle.setBackgroundColor(ContextCompat.getColor(AddGoalActivity.this, colorId));
-        vTag.setBackgroundColor(ContextCompat.getColor(AddGoalActivity.this, colorId));
-        vTimeline.setBackgroundColor(ContextCompat.getColor(AddGoalActivity.this, colorId));
-        vReminders.setBackgroundColor(ContextCompat.getColor(AddGoalActivity.this, colorId));
-        //vColorPicker.setBackgroundColor(ContextCompat.getColor(AddGoalActivity.this,colorId));
-        vColorPicker.setBackgroundTintList(getResources().getColorStateList(colorId));
-        //changing chips color
-        setChipsColor(colorId);
-    }
-
-    private void setChipsColor(int colorId) {
-        for (int i = 0; i < cgTags.getChildCount(); i++) {
-            cgTags.getChildAt(i).setBackgroundColor(colorId);
-            Chip chip = (Chip) cgTags.getChildAt(i);
-            chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(colorId)));
         }
+    }
+
+    private void setViewStripColors(String selectedColor) {
+        vTitle.setBackgroundColor(Color.parseColor(selectedColor));
+        vTag.setBackgroundColor(Color.parseColor(selectedColor));
+        vTimeline.setBackgroundColor(Color.parseColor(selectedColor));
+        vReminders.setBackgroundColor(Color.parseColor(selectedColor));
+        vColorPicker.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(selectedColor)));
+        //changing chips color
+        setChipsColor(selectedColor);
+    }
+
+    private boolean validate() {
+        //checking for title
+        if (title.trim().isEmpty() | description.trim().isEmpty())
+        {
+            Toasty.warning(AddGoalActivity.this,"Enter Tile & Description").show();
+            return false;
+        }
+        if (startDate == null | endDate == null)
+        {
+            Toasty.warning(AddGoalActivity.this,"Please select Start & End Date").show();
+            return false;
+        }
+        if (tags.size() < 1)
+        {
+            Toasty.warning(AddGoalActivity.this,"Add atleast One Tag for your goal").show();
+            return false;
+        }
+
+        return true;
+    }
+
+    private void setChipsColor(String selectedColor) {
+        for (int i = 0; i < cgTags.getChildCount(); i++) {
+            cgTags.getChildAt(i).setBackgroundColor(Color.parseColor(selectedColor));
+            Chip chip = (Chip) cgTags.getChildAt(i);
+            chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(selectedColor)));
+        }
+    }
+
+    private void openPhotoPicker() {
+        if (!checkCameraPermission()) {
+            checkAndRequestStorageCameraPermissions();
+        }
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
     }
 
     private boolean checkCameraPermission() {
@@ -261,6 +316,31 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         }
     }
 
+    private void createColorPalette() {
+        colorPalette = getResources().getStringArray(R.array.color_palette);
+
+        for (int i = 0; i < colorPalette.length; i++) {
+            //create radio button by inflating radio button layout
+            LayoutInflater inflater = LayoutInflater.from(AddGoalActivity.this);
+            View rbView = inflater.inflate(R.layout.component_custom_radio_button, null);
+            RadioButton rb = (RadioButton) rbView.getRootView();
+
+            //set unique id
+            rb.setId(i);
+
+            //set some margin to radio buttons
+            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(4, 4, 4, 4);
+            rb.setLayoutParams(params);
+
+            //set color from pallete
+            rb.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(colorPalette[i])));
+
+            //add view
+            rgColors.addView(rb);
+        }
+    }
+
     private void initColorPickerDialog() {
         colorPickerSheetDialog = new BottomSheetDialog(AddGoalActivity.this);
         colorPickerSheetLayout = LayoutInflater.from(getApplicationContext()).inflate(R.layout.component_color_picker_dialog, (ViewGroup) findViewById(R.id.component_color_picker_dialog_ll_container));
@@ -281,6 +361,8 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         decorview = getWindow().getDecorView();
         llCoverPhoto = findViewById(R.id.activity_add_goal_ll_add_cover);
         ivCover = findViewById(R.id.activity_add_goal_iv_goal_cover);
+        etTitle = findViewById(R.id.activity_add_goal_et_goal_title);
+        etDescription = findViewById(R.id.activity_add_goal_et_goal_description);
         vColorPicker = findViewById(R.id.activity_add_goal_view_color_picker);
         etTags = findViewById(R.id.activity_add_goal_et_tags);
         cgTags = findViewById(R.id.activity_add_goal_cg_tags);
@@ -326,7 +408,7 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         chip.setCloseIconVisible(true);
         chip.setCheckable(true);
         chip.setCloseIcon(getResources().getDrawable(R.drawable.ic_close));
-        chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(selectedColorId)));
+        chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(color)));
         chip.setOnCloseIconClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -26,4 +26,14 @@
     <color name="lightGrey">#F3F3F3</color>
     <color name="lightBlack">#4F5257</color>
 
+    <string-array name="color_palette">
+        <item>#D3D2FB</item>
+        <item>#F0C1C5</item>
+        <item>#DCF0F5</item>
+        <item>#F4ECC0</item>
+        <item>#E5F4CB</item>
+        <item>#F3F3F3</item>
+        <item>#4F5257</item>
+    </string-array>
+
 </resources>

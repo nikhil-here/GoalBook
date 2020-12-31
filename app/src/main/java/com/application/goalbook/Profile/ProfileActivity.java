@@ -38,7 +38,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
         {
             initViews();
             initListeners();
-            initColorPickerDialog();
+            //initColorPickerDialog();
         }
     }
 
@@ -46,36 +46,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
-        switch (radioGroup.getCheckedRadioButtonId()) {
-            case R.id.component_color_picker_dialog_rb_red:
-                selectedColorId = R.color.lightRed;
-                setViewStripColors(R.color.lightRed);
-                break;
-            case R.id.component_color_picker_dialog_rb_yellow:
-                selectedColorId = R.color.lightYellow;
-                setViewStripColors(R.color.lightYellow);
-                break;
-            case R.id.component_color_picker_dialog_rb_green:
-                selectedColorId = R.color.lightGreen;
-                setViewStripColors(R.color.lightGreen);
-                break;
-            case R.id.component_color_picker_dialog_rb_blue:
-                selectedColorId = R.color.lightBlue;
-                setViewStripColors(R.color.lightBlue);
-                break;
-            case R.id.component_color_picker_dialog_rb_violet:
-                selectedColorId = R.color.lightViolet;
-                setViewStripColors(R.color.lightViolet);
-                break;
-            case R.id.component_color_picker_dialog_rb_grey:
-                selectedColorId = R.color.lightGrey;
-                setViewStripColors(R.color.lightGrey);
-                break;
-            case R.id.component_color_picker_dialog_rb_black:
-                selectedColorId = R.color.lightBlack;
-                setViewStripColors(R.color.lightBlack);
-                break;
-        }
     }
 
     private void setViewStripColors(int colorId) {

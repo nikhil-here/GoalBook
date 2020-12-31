@@ -29,6 +29,8 @@ android {
 }
 
 dependencies {
+    def room_version = "2.2.6"
+    def lifecycle_version = "2.2.0"
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
@@ -42,4 +44,15 @@ dependencies {
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    //Room Database
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+    //Toasty
+    implementation 'com.github.GrenderG:Toasty:1.5.0'
+    //Gson
+    implementation 'com.google.code.gson:gson:2.8.6'
 }
