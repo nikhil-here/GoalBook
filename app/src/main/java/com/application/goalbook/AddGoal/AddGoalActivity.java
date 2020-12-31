@@ -39,6 +39,7 @@ import com.application.goalbook.Database.Goal;
 import com.application.goalbook.Database.GoalViewModel;
 import com.application.goalbook.R;
 import com.application.goalbook.Utility.Constants;
+import com.application.goalbook.Utility.HidingKeyboard;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -102,6 +103,8 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_goal);
+        HidingKeyboard.setupUI(findViewById(R.id.activity_add_goal_cl_container), this);
+
         if (savedInstanceState == null) {
 
             //initializing goalviewmodel
@@ -163,7 +166,7 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         //get tags
         for(int i = 0; i < cgTags.getChildCount(); i++)
         {
-            Chip chip = (Chip) cgTags.getChildAt(0);
+            Chip chip = (Chip) cgTags.getChildAt(i);
             String tag = (String) chip.getChipText();
             tags.add(tag);
         }
@@ -181,7 +184,8 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_GALLERY && data != null) {
-            coverImage = data.getData().toString();
+            coverImage = data.getData().getPath();
+
             ivCover.setImageURI(data.getData());
         }
     }

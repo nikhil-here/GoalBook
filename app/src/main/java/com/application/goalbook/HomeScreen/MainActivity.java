@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,22 +30,31 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.application.goalbook.AddGoal.AddGoalActivity;
+import com.application.goalbook.Database.Goal;
+import com.application.goalbook.Database.GoalViewModel;
 import com.application.goalbook.Profile.ProfileActivity;
 import com.application.goalbook.R;
+import com.application.goalbook.Utility.Constants;
+import com.application.goalbook.Utility.StringFormatter;
 import com.application.goalbook.ViewGoals.ViewGoalsActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener,Observer<List<Goal>> {
 
     private View decorview;
     private TextView tvAllGoals,tvUsername,tvHint;
     private CircleImageView civProfile;
     private ExtendedFloatingActionButton efabAddGoal;
+
+    //For Dashboard
+    private int totalCount = 0, pendingCount = 0, completedCount = 0;
+    private TextView tvTotalCount, tvCompletedCount, tvPendingCount;
 
     //For Ads
     private TextView[] tvAdSlider;
@@ -57,25 +68,67 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     private LinearLayout llGoalsSlider;
     private RecyclerView rvGoals;
     private Adapter_Goals adapterGoals;
-    private ArrayList<Pojo_Goal> pojoGoalArrayList;
+    private List<Goal> pojoGoalArrayList  = new ArrayList<>();
 
+    //Viewmodel
+    private GoalViewModel goalViewModel;
     public static final String TAG = "MainActivity";
+
+    //String Formatter
+    private StringFormatter stringFormatter;
+
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
+
+            //initializing goalviewmodel
+            goalViewModel = new ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(GoalViewModel.class);
+            //setting Observer for goals list
+            goalViewModel.getAllGoals().observe(this,this);
+            //initiazling string formmater
+            stringFormatter = new StringFormatter(this);
+
             initViews();
             initListeners();
             getAds();
             setAds();
-            getGoals();
             setGoals();
             initAdSlider(0);
             initGoalSlider(0);
         }
+    }
+
+
+    @Override
+    public void onChanged(List<Goal> goals) {
+        pojoGoalArrayList = goals;
+        adapterGoals.submitList(goals);
+        updateDashboard(goals);
+    }
+
+    private void updateDashboard(List<Goal> goals) {
+        totalCount = goals.size();
+        completedCount = 0;
+        pendingCount = 0;
+
+        for(int i = 0; i<totalCount; i++)
+        {
+            if (goals.get(i).getStatus() == Constants.STATUS_COMPLETED)
+            {
+                completedCount = completedCount + 1;
+            }else{
+                pendingCount = pendingCount + 1;
+            }
+        }
+
+        tvTotalCount.setText(stringFormatter.countFormatter(totalCount));
+        tvCompletedCount.setText(stringFormatter.countFormatter(completedCount));
+        tvPendingCount.setText(stringFormatter.countFormatter(pendingCount));
     }
 
     @Override
@@ -109,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
 
 
     private void setGoals() {
-        adapterGoals = new Adapter_Goals(MainActivity.this, pojoGoalArrayList);
+        adapterGoals = new Adapter_Goals(MainActivity.this);
         rvGoals.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
         rvGoals.hasFixedSize();
         rvGoals.setAdapter(adapterGoals);
@@ -159,14 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         });
     }
 
-    private void getGoals() {
-        pojoGoalArrayList = new ArrayList<>();
-        pojoGoalArrayList.add(new Pojo_Goal("https://eco-business.imgix.net/ebmedia/fileuploads/Feature_RightsofNature_inline2.jpg?fit=crop&h=960&ixlib=django-1.2.0&w=1440", "Kalsubai Trek", "Traveling", "02 Months Remainig", R.color.lightRed));
-        pojoGoalArrayList.add(new Pojo_Goal("https://www.thestatesman.com/wp-content/uploads/2020/02/shaw-575x321.jpg", "Playing Cricket", "Sports", "05 Months Remainig", R.color.lightBlue));
-        pojoGoalArrayList.add(new Pojo_Goal("https://i.ytimg.com/vi/o8lABLhyI-A/maxresdefault.jpg", "Solo Dance", "Dance", "01 Year Remainig", R.color.lightGreen));
-        pojoGoalArrayList.add(new Pojo_Goal("https://www.greengeeks.com/blog/wp-content/uploads/2016/10/website-money.jpg", "Make Money ", "Finance", "3 Years from now", R.color.lightViolet));
-        pojoGoalArrayList.add(new Pojo_Goal("https://www.invespcro.com/blog/images/blog-images/main.png", "Plan Year", "Note", "5 Years from now", R.color.lightYellow));
-    }
+
 
     private void getAds() {
         adList = new ArrayList<>();
@@ -222,6 +268,12 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         llAdsSlider = findViewById(R.id.activity_main_ll_ads_slider);
         llGoalsSlider = findViewById(R.id.activity_main_ll_goals_slider);
         tvAllGoals = findViewById(R.id.activity_main_tv_all_goals);
+
+        tvTotalCount = findViewById(R.id.activity_main_tv_total_count);
+        tvCompletedCount = findViewById(R.id.activity_main_tv_completed_count);
+        tvPendingCount = findViewById(R.id.activity_main_tv_pending_count);
+
+
     }
 
     private void initListeners() {
@@ -256,4 +308,6 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
         return i;
     }
+
+
 }
