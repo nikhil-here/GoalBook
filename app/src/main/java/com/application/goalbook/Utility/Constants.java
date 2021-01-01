@@ -12,4 +12,7 @@ public class Constants {
     //Goal status
     public static final int STATUS_PENDING = 0;
     public static final int STATUS_COMPLETED = 1;
+
+    //Image Directory Name
+    public static final String DIRECTORY_NAME = "goalCover";
 }

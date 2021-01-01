@@ -31,7 +31,6 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
     private ExtendedFloatingActionButton efabAddGoal;
     private RecyclerView rvGoals;
     private Adapter_Goals adapterGoals;
-    private ArrayList<Pojo_Goal> pojoGoalArrayList;
 
     //Viewmodel
     private GoalViewModel goalViewModel;

@@ -14,9 +14,11 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -26,6 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,6 +43,7 @@ import com.application.goalbook.Database.GoalViewModel;
 import com.application.goalbook.R;
 import com.application.goalbook.Utility.Constants;
 import com.application.goalbook.Utility.HidingKeyboard;
+import com.application.goalbook.Utility.ImageSaver;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -49,6 +53,7 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import es.dmoral.toasty.Toasty;
 
@@ -184,10 +189,39 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_GALLERY && data != null) {
-            coverImage = data.getData().getPath();
 
-            ivCover.setImageURI(data.getData());
+            String filename = UUID.randomUUID().toString().replace("-","");
+            String fileExtension = getfileExtension(data.getData());
+            Log.i(TAG, "onActivityResult: data.getData() "+data.getData());
+            Log.i(TAG, "onActivityResult: data.getData().toString() "+data.getData().toString());
+            Log.i(TAG, "onActivityResult: data.getData().getPath() "+data.getData().getPath());
+            Log.i(TAG, "onActivityResult: file extension "+fileExtension);
+            Log.i(TAG, "onActivityResult: file name "+filename);
+            coverImage = filename+"."+fileExtension;
+            try{
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                ivCover.setImageBitmap(bitmap);
+                //saving image
+                new ImageSaver(AddGoalActivity.this).
+                        setFileName(coverImage).
+                        setDirectoryName(Constants.DIRECTORY_NAME).
+                        save(bitmap);
+
+            }catch (Exception e)
+            {
+                Log.i(TAG, "onActivityResult: PhotoPicker Exception "+e.getMessage());
+            }
+
         }
+    }
+
+    private String getfileExtension(Uri uri)
+    {
+        String extension;
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        extension= mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+        return extension;
     }
 
     private void showDateRangePicker() {
@@ -426,8 +460,6 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
     public void afterTextChanged(Editable editable) {
         Log.i(TAG, "afterTextChanged: toString" + editable.toString());
     }
-
-
     //--------------------Listeners For Add Tags End  --------------------
 
 }

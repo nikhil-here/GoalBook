@@ -1,13 +1,29 @@
 package com.application.goalbook.Database;
 
 import android.net.Uri;
+import android.os.Build;
+import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.application.goalbook.Utility.StringFormatter;
+
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Entity(tableName = "goal_table")
 public class Goal {
@@ -141,4 +157,43 @@ public class Goal {
     public void setReminderFrequency(int reminderFrequency) {
         this.reminderFrequency = reminderFrequency;
     }
+
+    public String getRemainingTime()
+    {
+        DecimalFormat countFormat = new DecimalFormat("00");
+        Long currentDateInSeconds = System.currentTimeMillis() / 1000;
+        Long endDateInSeconds = this.endDate / 1000;
+        float difference;
+        String tense = "";
+
+
+        String [] periods = {"second","minute","hour","day","week","month","year","decade"};
+        float [] lengths = {60,60,24,7, (float) 4.35,12,10};
+
+        if (currentDateInSeconds > endDateInSeconds)
+        {
+            difference = currentDateInSeconds - endDateInSeconds;
+            tense = "passed";
+        }else{
+            difference = endDateInSeconds - currentDateInSeconds;
+            tense = "remaining";
+        }
+
+        int i = 0;
+        while((difference >= lengths[i]) && (i < lengths.length))
+        {
+            difference = difference / lengths[i];
+            i++;
+        }
+
+        difference = Math.round(difference);
+
+        if (difference != 1)
+        {
+            periods[i] = periods[i] + "s";
+        }
+
+        return countFormat.format(difference)+" "+periods[i]+ " "+tense;
+    }
+
 }

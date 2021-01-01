@@ -21,7 +21,7 @@ public interface GoalDao {
     @Delete
     void delete(Goal goal);
 
-    @Query("SELECT * FROM goal_table")
+    @Query("SELECT * FROM goal_table ORDER BY end_date ASC")
     LiveData<List<Goal>> getAllGoals();
 
     @Query("SELECT * FROM goal_table WHERE gid= (:gid)")

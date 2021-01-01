@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,15 +23,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.application.goalbook.AddGoal.AddGoalActivity;
 import com.application.goalbook.Database.Goal;
 import com.application.goalbook.R;
+import com.application.goalbook.Utility.Constants;
+import com.application.goalbook.Utility.ImageSaver;
 import com.application.goalbook.Utility.StringFormatter;
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
 public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> {
 
     private Goal goal;
     private Context context;
+    private ArrayList<String> tags;
+    private String title, description, color, coverImage;
+    private Long startDate, endDate;
+
 
     public static final String TAG = "Adapter_Goals";
 
@@ -71,22 +82,40 @@ public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         goal = getItem(position);
-        holder.tvTitle.setText(goal.getTitle());
-        holder.tvDescription.setText(goal.getDescription());
-        holder.viewColor.setBackgroundColor(Color.parseColor(goal.getColor()));
+        title = goal.getTitle();
+        description = goal.getDescription();
+        color = goal.getColor();
+        tags = goal.getTags();
+        coverImage = goal.getCoverImage();
+        startDate = goal.getStartDate();
+        endDate = goal.getEndDate();
 
-        Log.i(TAG, "onBindViewHolder:  Tags List "+goal.getTags());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM YYYY HH:mm:ss");
+        Log.i(TAG, "onBindViewHolder: enDate Date "+dateFormat.format(endDate));
+        Log.i(TAG, "onBindViewHolder: endDate long "+endDate);
+
+        holder.tvTitle.setText(title);
+        holder.tvDescription.setText(description);
+        holder.viewColor.setBackgroundColor(Color.parseColor(color));
+
         holder.cgTags.removeAllViews();
-        for (int i = 0; i < goal.getTags().size(); i++)
+        for (int i = 0; i < tags.size(); i++)
         {
             Chip chip = new Chip(context);
-            chip.setText(goal.getTags().get(i));
-            chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(goal.getColor())));
+            chip.setText(tags.get(i));
+            chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(color)));
             holder.cgTags.addView(chip);
         }
 
-        holder.ivCover.setImageResource(R.drawable.background);
-        holder.tvRemainingTime.setText(new StringFormatter(context).timeLineFormatter(goal.getEndDate()));
+        Bitmap bitmap = new ImageSaver(context).
+                setFileName(coverImage).
+                setDirectoryName(Constants.DIRECTORY_NAME).
+                load();
+
+        holder.ivCover.setImageBitmap(bitmap);
+
+        holder.tvRemainingTime.setText(goal.getRemainingTime());
     }
 
 

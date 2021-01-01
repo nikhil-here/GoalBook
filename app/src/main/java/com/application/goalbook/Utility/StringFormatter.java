@@ -25,6 +25,6 @@ public class StringFormatter {
     public String timeLineFormatter(Long timestamp)
     {
         PrettyTime prettyTime = new PrettyTime();
-        return prettyTime.format(new Date(TimeUnit.SECONDS.toMillis(timestamp)));
+        return prettyTime.format(new Date(TimeUnit.MILLISECONDS.toMillis(timestamp)));
     }
 }
