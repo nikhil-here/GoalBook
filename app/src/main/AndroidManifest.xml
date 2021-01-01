@@ -14,13 +14,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GoalBook">
-        <activity android:name=".ViewGoals.ViewGoalActivity"  android:theme="@style/ViewGoal"  android:parentActivityName=".HomeScreen.MainActivity" ></activity>
+
+        <activity
+            android:name=".ViewGoals.ViewGoalActivity"
+            android:parentActivityName=".HomeScreen.MainActivity"
+            android:theme="@style/ViewGoal" />
         <activity android:name=".Profile.ProfileActivity" />
         <activity
             android:name=".AddGoal.AddGoalActivity"
             android:parentActivityName=".HomeScreen.MainActivity"
             android:theme="@style/AddGoal" />
-        <activity android:name=".ViewGoals.ViewGoalsActivity"/>
+        <activity android:name=".ViewGoals.ViewGoalsActivity" />
         <activity android:name=".LoginAndRegistration.CongratualtionActivity" />
         <activity android:name=".LoginAndRegistration.OTPActivity" />
         <activity android:name=".LoginAndRegistration.LoginActivity" />

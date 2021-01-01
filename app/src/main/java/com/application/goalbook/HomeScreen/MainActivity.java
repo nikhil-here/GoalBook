@@ -143,8 +143,17 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     }
 
     @Override
-    public void onEditGoalClick(int position) {
+    public void onEditGoalClick(View view, int position) {
+        Intent viewGoalIntent = new Intent(MainActivity.this, AddGoalActivity.class);
+        viewGoalIntent.putExtra("id", pojoGoalArrayList.get(position).getGid());
 
+        Pair[] pairs = new Pair[3];
+        pairs[0] = new Pair<View, String>(view.findViewById(R.id.component_goal_iv_cover), "cover");
+        pairs[1] = new Pair<View, String>(view.findViewById(R.id.component_goal_tv_goal_title), "title");
+        pairs[2] = new Pair<View, String>(view.findViewById(R.id.component_goal_tv_goal_description), "description");
+
+        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
+        startActivity(viewGoalIntent, activityOptions.toBundle());
     }
 
     @Override

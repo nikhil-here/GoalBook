@@ -146,14 +146,19 @@ public class ViewGoalActivity extends AppCompatActivity implements Observer<Goal
         switch (reminderFrequency) {
             case Constants.REMINDER_NONE:
                 chip.setText("None");
+                break;
             case Constants.REMINDER_DAILY:
                 chip.setText("Daily");
+                break;
             case Constants.REMINDER_WEEKLY:
                 chip.setText("Weekly");
+                break;
             case Constants.REMINDER_MONTHLY:
                 chip.setText("Monthly");
+                break;
             case Constants.REMINDER_YEARLY:
                 chip.setText("Yearly");
+                break;
         }
         cgReminders.addView(chip);
 
@@ -161,7 +166,6 @@ public class ViewGoalActivity extends AppCompatActivity implements Observer<Goal
     }
 
     private void getValues(Goal goal) {
-
             tags = goal.getTags();
             color = goal.getColor();
             title = goal.getTitle();
@@ -171,8 +175,6 @@ public class ViewGoalActivity extends AppCompatActivity implements Observer<Goal
             coverImage = goal.getCoverImage();
             description = goal.getDescription();
             reminderFrequency = goal.getReminderFrequency();
-
-
     }
 
 

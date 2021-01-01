@@ -25,6 +25,7 @@
                 android:background="@drawable/cover_shadow"
                 android:elevation="16dp"
                 android:scaleType="centerCrop"
+                android:transitionName="cover"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -87,6 +88,7 @@
                 android:textCursorDrawable="@null"
                 android:textSize="16dp"
                 android:screenReaderFocusable="false"
+                android:transitionName="title"
                 app:layout_constraintLeft_toRightOf="@id/activity_add_goal_view_title"
                 app:layout_constraintRight_toLeftOf="@id/activity_add_goal_view_color_picker"
                 app:layout_constraintTop_toBottomOf="@id/activity_add_goal_iv_goal_cover" />
@@ -120,6 +122,7 @@
                 android:textColor="@color/blackVariant"
                 android:textCursorDrawable="@null"
                 android:textSize="14dp"
+                android:transitionName="description"
                 app:layout_constraintLeft_toLeftOf="@id/activity_add_goal_view_title"
                 app:layout_constraintRight_toRightOf="@id/activity_add_goal_view_color_picker"
                 app:layout_constraintTop_toBottomOf="@id/activity_add_goal_et_goal_title" />

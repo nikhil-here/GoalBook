@@ -150,7 +150,7 @@ public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> {
             ivEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    anInterface.onEditGoalClick(getAdapterPosition());
+                    anInterface.onEditGoalClick(itemView,getAdapterPosition());
                 }
             });
         }
@@ -159,6 +159,6 @@ public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> {
     public interface ViewGoalInterface
     {
         void onViewGoalClick(View view, int position);
-        void onEditGoalClick(int position);
+        void onEditGoalClick(View view, int position);
     }
 }

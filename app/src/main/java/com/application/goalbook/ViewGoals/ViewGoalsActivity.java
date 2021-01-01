@@ -4,27 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
-import android.widget.TextView;
 
 import com.application.goalbook.AddGoal.AddGoalActivity;
 import com.application.goalbook.Database.Goal;
 import com.application.goalbook.Database.GoalViewModel;
 import com.application.goalbook.HomeScreen.Adapter_Goals;
 import com.application.goalbook.HomeScreen.MainActivity;
-import com.application.goalbook.HomeScreen.Pojo_Goal;
 import com.application.goalbook.R;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ViewGoalsActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener, Observer<List<Goal>>, Adapter_Goals.ViewGoalInterface {
@@ -131,7 +126,16 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
     }
 
     @Override
-    public void onEditGoalClick(int position) {
+    public void onEditGoalClick(View view,int position) {
+        Intent viewGoalIntent = new Intent(ViewGoalsActivity.this, AddGoalActivity.class);
+        viewGoalIntent.putExtra("id", pojoGoalArrayList.get(position).getGid());
 
+        Pair[] pairs = new Pair[3];
+        pairs[0] = new Pair<View, String>(view.findViewById(R.id.component_goal_iv_cover), "cover");
+        pairs[1] = new Pair<View, String>(view.findViewById(R.id.component_goal_tv_goal_title), "title");
+        pairs[2] = new Pair<View, String>(view.findViewById(R.id.component_goal_tv_goal_description), "description");
+
+        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
+        startActivity(viewGoalIntent, activityOptions.toBundle());
     }
 }
