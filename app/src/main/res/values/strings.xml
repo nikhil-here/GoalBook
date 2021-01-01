@@ -23,4 +23,10 @@
     <!--  For Edittext Validation  -->
     <!--  following string contains white space for allowing space as input  -->
     <string name="validation_edittext_digits">ab cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+
+    <!--  View Goal   -->
+    <string name="alert_delete_goal_title">Are you sure?</string>
+    <string name="alert_delete_goal_message">you won\'t be able to retrieve the goal once you delete it.</string>
+    <string name="decline">CANCEL</string>
+    <string name="accept">DELETE</string>
 </resources>

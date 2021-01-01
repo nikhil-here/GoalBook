@@ -34,14 +34,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        if (savedInstanceState == null)
-        {
-            initViews();
-            initListeners();
-            //initColorPickerDialog();
-        }
-    }
 
+        initViews();
+        initListeners();
+        //initColorPickerDialog();
+
+    }
 
 
     @Override
@@ -106,10 +104,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
 
     @Override
     public void onClick(View view) {
-        switch (view.getId())
-        {
+        switch (view.getId()) {
             case R.id.activity_profile_view_color_picker:
-                colorPickerSheetDialog.show();
+                //colorPickerSheetDialog.show();
                 break;
         }
     }

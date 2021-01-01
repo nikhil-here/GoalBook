@@ -36,6 +36,7 @@ import com.application.goalbook.Profile.ProfileActivity;
 import com.application.goalbook.R;
 import com.application.goalbook.Utility.Constants;
 import com.application.goalbook.Utility.StringFormatter;
+import com.application.goalbook.ViewGoals.ViewGoalActivity;
 import com.application.goalbook.ViewGoals.ViewGoalsActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
@@ -45,10 +46,10 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener,Observer<List<Goal>> {
+public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener, Observer<List<Goal>>, Adapter_Goals.ViewGoalInterface {
 
     private View decorview;
-    private TextView tvAllGoals,tvUsername,tvHint;
+    private TextView tvAllGoals, tvUsername, tvHint;
     private CircleImageView civProfile;
     private ExtendedFloatingActionButton efabAddGoal;
 
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     private LinearLayout llGoalsSlider;
     private RecyclerView rvGoals;
     private Adapter_Goals adapterGoals;
-    private List<Goal> pojoGoalArrayList  = new ArrayList<>();
+    private List<Goal> pojoGoalArrayList = new ArrayList<>();
 
     //Viewmodel
     private GoalViewModel goalViewModel;
@@ -78,29 +79,26 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     private StringFormatter stringFormatter;
 
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
 
-            //initializing goalviewmodel
-            goalViewModel = new ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(GoalViewModel.class);
-            //setting Observer for goals list
-            goalViewModel.getAllGoals().observe(this,this);
-            //initiazling string formmater
-            stringFormatter = new StringFormatter(this);
+        //initializing goalviewmodel
+        goalViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(GoalViewModel.class);
+        //setting Observer for goals list
+        goalViewModel.getAllGoals().observe(this, this);
+        //initiazling string formmater
+        stringFormatter = new StringFormatter(this);
 
-            initViews();
-            initListeners();
-            getAds();
-            setAds();
-            setGoals();
-            initAdSlider(0);
-            initGoalSlider(0);
-        }
+        initViews();
+        initListeners();
+        getAds();
+        setAds();
+        setGoals();
+        initAdSlider(0);
+        initGoalSlider(0);
+
     }
 
 
@@ -116,12 +114,10 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         completedCount = 0;
         pendingCount = 0;
 
-        for(int i = 0; i<totalCount; i++)
-        {
-            if (goals.get(i).getStatus() == Constants.STATUS_COMPLETED)
-            {
+        for (int i = 0; i < totalCount; i++) {
+            if (goals.get(i).getStatus() == Constants.STATUS_COMPLETED) {
                 completedCount = completedCount + 1;
-            }else{
+            } else {
                 pendingCount = pendingCount + 1;
             }
         }
@@ -132,11 +128,30 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     }
 
     @Override
+    public void onViewGoalClick(View view, int position) {
+        Intent viewGoalIntent = new Intent(MainActivity.this, ViewGoalActivity.class);
+        viewGoalIntent.putExtra("id", pojoGoalArrayList.get(position).getGid());
+
+        Pair[] pairs = new Pair[3];
+        pairs[0] = new Pair<View, String>(view.findViewById(R.id.component_goal_iv_cover), "cover");
+        pairs[1] = new Pair<View, String>(view.findViewById(R.id.component_goal_tv_goal_title), "title");
+        pairs[2] = new Pair<View, String>(view.findViewById(R.id.component_goal_tv_goal_description), "description");
+
+        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
+        startActivity(viewGoalIntent, activityOptions.toBundle());
+
+    }
+
+    @Override
+    public void onEditGoalClick(int position) {
+
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.activity_main_civ_profile:
                 jumpToProfile();
-
                 break;
             case R.id.activity_main_efab_add_goals:
                 Intent addGoalIntent = new Intent(MainActivity.this, AddGoalActivity.class);
@@ -152,17 +167,17 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     private void jumpToProfile() {
         Intent profileIntent = new Intent(MainActivity.this, ProfileActivity.class);
         Pair[] pairs = new Pair[3];
-        pairs[0] = new Pair<View,String>(civProfile,"profile");
-        pairs[1] = new Pair<View,String>(tvUsername,"username");
-        pairs[2] = new Pair<View,String>(tvHint,"hint");
-        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this,pairs);
-        startActivity(profileIntent,activityOptions.toBundle());
+        pairs[0] = new Pair<View, String>(civProfile, "profile");
+        pairs[1] = new Pair<View, String>(tvUsername, "username");
+        pairs[2] = new Pair<View, String>(tvHint, "hint");
+        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
+        startActivity(profileIntent, activityOptions.toBundle());
 
     }
 
 
     private void setGoals() {
-        adapterGoals = new Adapter_Goals(MainActivity.this);
+        adapterGoals = new Adapter_Goals(MainActivity.this, this);
         rvGoals.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
         rvGoals.hasFixedSize();
         rvGoals.setAdapter(adapterGoals);
@@ -211,7 +226,6 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
             }
         });
     }
-
 
 
     private void getAds() {

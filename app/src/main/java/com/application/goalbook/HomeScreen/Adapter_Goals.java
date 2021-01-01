@@ -41,12 +41,16 @@ public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> {
     private String title, description, color, coverImage;
     private Long startDate, endDate;
 
+    private ViewGoalInterface anInterface;
+
 
     public static final String TAG = "Adapter_Goals";
 
-    public Adapter_Goals(Context context) {
+    public Adapter_Goals(Context context,ViewGoalInterface anInterface) {
         super(DIFF_CALLBACK);
         this.context = context;
+        this.anInterface = anInterface;
+
     }
 
     private static final DiffUtil.ItemCallback<Goal> DIFF_CALLBACK = new DiffUtil.ItemCallback<Goal>() {
@@ -121,19 +125,40 @@ public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> {
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView ivCover;
+        private ImageView ivCover,ivEdit;
         private TextView tvTitle,tvDescription, tvRemainingTime;
         private View viewColor;
         private ChipGroup cgTags;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            ivEdit = itemView.findViewById(R.id.component_goal_iv_edit_goal);
             ivCover = itemView.findViewById(R.id.component_goal_iv_cover);
             tvTitle = itemView.findViewById(R.id.component_goal_tv_goal_title);
             tvDescription = itemView.findViewById(R.id.component_goal_tv_goal_description);
             tvRemainingTime = itemView.findViewById(R.id.component_goal_tv_remaining_time);
             viewColor = itemView.findViewById(R.id.component_goal_view_goal_color);
             cgTags = itemView.findViewById(R.id.component_goal_cg_goal_tag);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    anInterface.onViewGoalClick(itemView,getAdapterPosition());
+                }
+            });
+
+            ivEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    anInterface.onEditGoalClick(getAdapterPosition());
+                }
+            });
         }
+    }
+
+    public interface ViewGoalInterface
+    {
+        void onViewGoalClick(View view, int position);
+        void onEditGoalClick(int position);
     }
 }

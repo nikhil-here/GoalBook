@@ -20,6 +20,9 @@
         <item name="android:windowFullscreen">true</item>
        <item name="android:windowTranslucentNavigation">true</item>
     </style>
-
+    <style name="ViewGoal" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
 
 </resources>

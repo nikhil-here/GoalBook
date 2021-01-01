@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,12 +27,13 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewGoalsActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener, Observer<List<Goal>> {
+public class ViewGoalsActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener, Observer<List<Goal>>, Adapter_Goals.ViewGoalInterface {
 
     private View decorview;
     private ExtendedFloatingActionButton efabAddGoal;
     private RecyclerView rvGoals;
     private Adapter_Goals adapterGoals;
+    private List<Goal> pojoGoalArrayList;
 
     //Viewmodel
     private GoalViewModel goalViewModel;
@@ -40,24 +43,22 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_goals);
-        if (savedInstanceState == null)
-        {
-            //initializing goalviewmodel
-            goalViewModel = new ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(GoalViewModel.class);
-            //setting Observer for goals list
-            goalViewModel.getAllGoals().observe(this,this);
 
-            initViews();
-            initListeners();
-            setGoals();
-        }
+        //initializing goalviewmodel
+        goalViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(GoalViewModel.class);
+        //setting Observer for goals list
+        goalViewModel.getAllGoals().observe(this, this);
+
+        initViews();
+        initListeners();
+        setGoals();
+
     }
 
 
     @Override
     public void onClick(View view) {
-        switch (view.getId())
-        {
+        switch (view.getId()) {
             case R.id.activity_view_goals_efab_add_goals:
                 Intent addGoalIntent = new Intent(ViewGoalsActivity.this, AddGoalActivity.class);
                 startActivity(addGoalIntent);
@@ -68,12 +69,13 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
 
     @Override
     public void onChanged(List<Goal> goals) {
+        pojoGoalArrayList = goals;
         adapterGoals.submitList(goals);
     }
 
 
     private void setGoals() {
-        adapterGoals = new Adapter_Goals(ViewGoalsActivity.this);
+        adapterGoals = new Adapter_Goals(ViewGoalsActivity.this, this);
         rvGoals.setLayoutManager(new LinearLayoutManager(ViewGoalsActivity.this, LinearLayoutManager.VERTICAL, false));
         rvGoals.hasFixedSize();
         rvGoals.setAdapter(adapterGoals);
@@ -116,4 +118,20 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
         return i;
     }
 
+    @Override
+    public void onViewGoalClick(View view, int position) {
+        Intent viewGoalIntent = new Intent(ViewGoalsActivity.this, ViewGoalActivity.class);
+        viewGoalIntent.putExtra("id", pojoGoalArrayList.get(position).getGid());
+        Pair[] pairs = new Pair[3];
+        pairs[0] = new Pair<View, String>(view.findViewById(R.id.component_goal_iv_cover), "cover");
+        pairs[1] = new Pair<View, String>(view.findViewById(R.id.component_goal_tv_goal_title), "title");
+        pairs[2] = new Pair<View, String>(view.findViewById(R.id.component_goal_tv_goal_description), "description");
+        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
+        startActivity(viewGoalIntent, activityOptions.toBundle());
+    }
+
+    @Override
+    public void onEditGoalClick(int position) {
+
+    }
 }

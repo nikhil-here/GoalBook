@@ -146,7 +146,6 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
                 getValues();
                 if (validate())
                 {
-                    Toast.makeText(this, "Validated", Toast.LENGTH_SHORT).show();
                     saveGoal();
                 }
                 break;
@@ -160,6 +159,7 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
     private void saveGoal() {
         Goal goal = new Goal(coverImage,title,description,tags,color,status,startDate,endDate,reminderFrequency);
         goalViewModel.insert(goal);
+        Toasty.success(AddGoalActivity.this,"New Goal Added").show();
         finish();
     }
 
