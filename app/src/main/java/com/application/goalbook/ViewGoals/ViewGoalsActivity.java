@@ -9,8 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.EditText;
 
 import com.application.goalbook.AddGoal.AddGoalActivity;
 import com.application.goalbook.Database.Goal;
@@ -18,17 +22,24 @@ import com.application.goalbook.Database.GoalViewModel;
 import com.application.goalbook.HomeScreen.Adapter_Goals;
 import com.application.goalbook.HomeScreen.MainActivity;
 import com.application.goalbook.R;
+import com.application.goalbook.Utility.Constants;
+import com.application.goalbook.Utility.HidingKeyboard;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ViewGoalsActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener, Observer<List<Goal>>, Adapter_Goals.ViewGoalInterface {
+public class ViewGoalsActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener, Observer<List<Goal>>, Adapter_Goals.ViewGoalInterface, TextWatcher, ChipGroup.OnCheckedChangeListener {
 
     private View decorview;
+    private ChipGroup cgStatus;
+    private EditText etSearch;
     private ExtendedFloatingActionButton efabAddGoal;
     private RecyclerView rvGoals;
     private Adapter_Goals adapterGoals;
     private List<Goal> pojoGoalArrayList;
+    private List<Goal> filteredList = new ArrayList<>();
 
     //Viewmodel
     private GoalViewModel goalViewModel;
@@ -38,7 +49,7 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_goals);
-
+        HidingKeyboard.setupUI(findViewById(R.id.activity_view_goals_cl_container), this);
         //initializing goalviewmodel
         goalViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(GoalViewModel.class);
         //setting Observer for goals list
@@ -65,6 +76,7 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
     @Override
     public void onChanged(List<Goal> goals) {
         pojoGoalArrayList = goals;
+        adapterGoals.setCompleteGoalList(pojoGoalArrayList);
         adapterGoals.submitList(goals);
     }
 
@@ -79,11 +91,15 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
     private void initViews() {
         decorview = getWindow().getDecorView();
         rvGoals = findViewById(R.id.activity_view_goals_rv);
+        etSearch = findViewById(R.id.activity_view_goals_et_search);
         efabAddGoal = findViewById(R.id.activity_view_goals_efab_add_goals);
+        cgStatus = findViewById(R.id.activity_view_goals_cg_status);
     }
 
     private void initListeners() {
         efabAddGoal.setOnClickListener(this);
+        etSearch.addTextChangedListener(this);
+        cgStatus.setOnCheckedChangeListener(this);
     }
 
 
@@ -138,4 +154,50 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
         ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
         startActivity(viewGoalIntent, activityOptions.toBundle());
     }
+
+    @Override
+    public void onCheckedChanged(ChipGroup group, int checkedId) {
+
+        List <Goal> completedGoalList = new ArrayList<>();
+        List <Goal> pendingGoalList = new ArrayList<>();
+        for(int i = 0; i < pojoGoalArrayList.size(); i++)
+        {
+            if (pojoGoalArrayList.get(i).getStatus() == Constants.STATUS_COMPLETED)
+            {
+                completedGoalList.add(pojoGoalArrayList.get(i));
+            }else {
+                pendingGoalList.add(pojoGoalArrayList.get(i));
+            }
+        }
+
+        switch (group.getCheckedChipId())
+        {
+            case R.id.activity_view_goals_chip_status_total:
+                adapterGoals.submitList(pojoGoalArrayList);
+                break;
+            case R.id.activity_view_goals_chip_status_completed:
+                adapterGoals.submitList(completedGoalList);
+                break;
+            case R.id.activity_view_goals_chip_status_pending:
+                adapterGoals.submitList(pendingGoalList);
+                break;
+        }
+    }
+
+    //--------------------For Filtering List  --------------------
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        adapterGoals.getFilter().filter(charSequence);
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
+    }
+    //--------------------For Filtering List  --------------------
 }

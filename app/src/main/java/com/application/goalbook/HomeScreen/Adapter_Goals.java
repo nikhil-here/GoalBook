@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,18 +32,21 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> {
+public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> implements Filterable {
 
     private Goal goal;
     private Context context;
     private ArrayList<String> tags;
-    private String title, description, color, coverImage;
     private Long startDate, endDate;
-
+    private String title, description, color, coverImage;
     private ViewGoalInterface anInterface;
+
+    private List<Goal> completeGoalList = new ArrayList<>();
 
 
     public static final String TAG = "Adapter_Goals";
@@ -50,6 +55,8 @@ public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> {
         super(DIFF_CALLBACK);
         this.context = context;
         this.anInterface = anInterface;
+        //storing original list for furthur filtering
+        Log.i(TAG, "Adapter_Goals Constructor: completeList size "+completeGoalList.size());
 
     }
 
@@ -94,15 +101,9 @@ public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> {
         startDate = goal.getStartDate();
         endDate = goal.getEndDate();
 
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM YYYY HH:mm:ss");
-        Log.i(TAG, "onBindViewHolder: enDate Date "+dateFormat.format(endDate));
-        Log.i(TAG, "onBindViewHolder: endDate long "+endDate);
-
         holder.tvTitle.setText(title);
         holder.tvDescription.setText(description);
         holder.viewColor.setBackgroundColor(Color.parseColor(color));
-
         holder.cgTags.removeAllViews();
         for (int i = 0; i < tags.size(); i++)
         {
@@ -111,16 +112,14 @@ public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> {
             chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(color)));
             holder.cgTags.addView(chip);
         }
-
         Bitmap bitmap = new ImageSaver(context).
                 setFileName(coverImage).
                 setDirectoryName(Constants.DIRECTORY_NAME).
                 load();
-
         holder.ivCover.setImageBitmap(bitmap);
-
         holder.tvRemainingTime.setText(goal.getRemainingTime());
     }
+
 
 
 
@@ -139,26 +138,67 @@ public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> {
             tvRemainingTime = itemView.findViewById(R.id.component_goal_tv_remaining_time);
             viewColor = itemView.findViewById(R.id.component_goal_view_goal_color);
             cgTags = itemView.findViewById(R.id.component_goal_cg_goal_tag);
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     anInterface.onViewGoalClick(itemView,getAdapterPosition());
                 }
             });
-
             ivEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     anInterface.onEditGoalClick(itemView,getAdapterPosition());
                 }
             });
+
+
         }
     }
-
     public interface ViewGoalInterface
     {
         void onViewGoalClick(View view, int position);
         void onEditGoalClick(View view, int position);
+    }
+
+    @Override
+    public Filter getFilter() {
+        return goalFilter;
+    }
+
+    private Filter goalFilter = new Filter()
+    {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            List<Goal> filteredList = new ArrayList<>();
+
+            if (charSequence == null | charSequence.length() == 0)
+            {
+                filteredList.addAll(completeGoalList);
+            }else{
+                String filterPattern = charSequence.toString().toLowerCase().trim();
+                for(Goal eachGoal : completeGoalList )
+                {
+                    if (eachGoal.getTitle().toLowerCase().contains(filterPattern) | eachGoal.getDescription().toLowerCase().contains(filterPattern) | eachGoal.getTags().contains(filterPattern))
+                    {
+                        filteredList.add(eachGoal);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            Log.i(TAG, "publishResults: completeList size "+completeGoalList.size());
+            submitList((List<Goal>) filterResults.values);
+        }
+    };
+
+    public void setCompleteGoalList(List<Goal> completeGoalList) {
+        this.completeGoalList = completeGoalList;
     }
 }

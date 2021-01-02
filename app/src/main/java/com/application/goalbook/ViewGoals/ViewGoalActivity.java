@@ -2,14 +2,18 @@ package com.application.goalbook.ViewGoals;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.ActivityOptions;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +25,7 @@ import android.widget.TextView;
 import com.application.goalbook.AddGoal.AddGoalActivity;
 import com.application.goalbook.Database.Goal;
 import com.application.goalbook.Database.GoalViewModel;
+import com.application.goalbook.HomeScreen.MainActivity;
 import com.application.goalbook.R;
 import com.application.goalbook.Utility.Constants;
 import com.application.goalbook.Utility.ImageSaver;
@@ -78,13 +83,30 @@ public class ViewGoalActivity extends AppCompatActivity implements Observer<Goal
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_view_goal_edit:
-                Toasty.info(ViewGoalActivity.this, "Edit Goal Work In Progress").show();
-                break;
+                jumpToEditActivity();
+                return true;
             case R.id.menu_view_goal_delete:
                 deleteGoal();
-                break;
+                return true;
+            case R.drawable.ic_back:
+                NavUtils.navigateUpFromSameTask(this);
+                finish();
+                return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void jumpToEditActivity() {
+        Intent viewGoalIntent = new Intent(ViewGoalActivity.this, AddGoalActivity.class);
+        viewGoalIntent.putExtra("id", gid);
+
+        Pair[] pairs = new Pair[3];
+        pairs[0] = new Pair<View, String>(ivCover, "cover");
+        pairs[1] = new Pair<View, String>(etTitle, "title");
+        pairs[2] = new Pair<View, String>(etDescription, "description");
+
+        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
+        startActivity(viewGoalIntent, activityOptions.toBundle());
     }
 
     private void deleteGoal() {

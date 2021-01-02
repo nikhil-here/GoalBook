@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NavUtils;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.lifecycle.Observer;
@@ -152,19 +153,22 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         switch (item.getItemId()) {
             case R.id.menu_add_goal_save:
                 getValues();
-                if (isEditGoal) {
-                    updateGoal();
-                } else {
-                    if (validate()) {
+                if (validate())
+                {
+                    if (isEditGoal)
+                    {
+                        updateGoal();
+                    }else{
                         saveGoal();
                     }
                 }
-                break;
+                return true;
             case R.drawable.ic_close:
+                NavUtils.navigateUpFromSameTask(this);
                 finish();
-                break;
+                return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -213,6 +217,7 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         vTag.setBackgroundColor(Color.parseColor(color));
         vTimeline.setBackgroundColor(Color.parseColor(color));
         vReminders.setBackgroundColor(Color.parseColor(color));
+        vColorPicker.setBackgroundColor(Color.parseColor(color));
 
         //setting start and end date
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM YYYY");

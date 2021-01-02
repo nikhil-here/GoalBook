@@ -97,13 +97,13 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         setAds();
         setGoals();
         initAdSlider(0);
-        initGoalSlider(0);
+
 
     }
 
-
     @Override
     public void onChanged(List<Goal> goals) {
+        initGoalSlider(0);
         pojoGoalArrayList = goals;
         adapterGoals.submitList(goals);
         updateDashboard(goals);

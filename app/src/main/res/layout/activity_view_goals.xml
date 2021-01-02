@@ -2,15 +2,18 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_view_goals_cl_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".ViewGoals.ViewGoalsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
         <!--    Toolbar  -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -23,26 +26,29 @@
                 android:id="@+id/activity_view_goals_iv_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_search"
                 android:layout_marginLeft="2dp"
+                android:src="@drawable/ic_search"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
                 android:id="@+id/activity_view_goals_et_search"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:focusable="false"
-                android:gravity="center_vertical"
-                android:paddingLeft="10dp"
-                android:hint="search here..."
-                android:textColorHint="@color/blackVariant"
                 android:background="@android:color/transparent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:defaultFocusHighlightEnabled="false"
+                android:gravity="center_vertical"
+                android:hint="search here..."
+                android:imeOptions="actionSearch"
+                android:maxLines="1"
+                android:paddingLeft="10dp"
+                android:singleLine="true"
+                android:textColorHint="@color/blackVariant"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/activity_view_goals_iv_search"
-                app:layout_constraintRight_toLeftOf="@id/profile_image"/>
+                app:layout_constraintRight_toLeftOf="@id/profile_image"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profile_image"
@@ -59,75 +65,93 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:gravity="center_vertical"
-            android:padding="10dp"
             android:orientation="horizontal"
+            android:padding="10dp"
             android:weightSum="3">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_filter"/>
+                android:src="@drawable/ic_filter" />
 
-            <com.google.android.material.chip.Chip
-                android:layout_width="0dp"
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/activity_view_goals_cg_status"
+                style="@style/Widget.MaterialComponents.ChipGroup"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:layout_marginHorizontal="5dp"
-                android:text="Total"
-                app:chipBackgroundColor="@color/darkYellow"
-                android:textColor="@color/black"
-                android:layout_weight="1"/>
+                android:layout_weight="3"
+                app:checkedChip="@id/activity_view_goals_chip_status_total"
+                app:singleSelection="true">
 
-            <com.google.android.material.chip.Chip
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:layout_marginHorizontal="5dp"
-                android:text="Completed"
-                app:chipBackgroundColor="@color/darkGreen"
-                android:textColor="@color/black"
-                android:layout_weight="1"/>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/activity_view_goals_chip_status_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:checkable="true"
+                    android:gravity="center"
+                    android:text="Total"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    app:checkedIconEnabled="false"
+                    app:chipBackgroundColor="@color/chip_background_total" />
 
-            <com.google.android.material.chip.Chip
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:layout_marginHorizontal="5dp"
-                android:text="Pending"
-                app:chipBackgroundColor="@color/darkRed"
-                android:textColor="@color/black"
-                android:layout_weight="1"/>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/activity_view_goals_chip_status_completed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_weight="1"
+                    android:checkable="true"
+                    android:gravity="center"
+                    android:text="Completed"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    app:checkedIconEnabled="false"
+                    app:chipBackgroundColor="@color/chip_background_completed" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/activity_view_goals_chip_status_pending"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_weight="1"
+                    android:checkable="true"
+                    android:gravity="center"
+                    android:text="Pending"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    app:checkedIconEnabled="false"
+                    app:chipBackgroundColor="@color/chip_background_pending" />
+            </com.google.android.material.chip.ChipGroup>
+
 
         </LinearLayout>
-
-
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/activity_view_goals_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/component_goal"/>
+            tools:listitem="@layout/component_goal" />
 
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/activity_view_goals_efab_add_goals"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
         android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="24dp"
         android:fontFamily="@font/roboto_medium"
         android:text="Add Your Goal"
         android:textColor="@color/white"
+        app:fabSize="mini"
         app:icon="@drawable/ic_add"
         app:iconTint="@color/white"
-        app:fabSize="mini"/>
-
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
