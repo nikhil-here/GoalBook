@@ -3,6 +3,7 @@ package com.application.goalbook.SplashAndIntroduction;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.application.goalbook.R;
 public class SplashActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener {
 
     private View decorView;
+    private SharedPreferences sharedPreferences;
     public static final Integer SPLASH_TIME = 2000;
 
     @Override
@@ -26,8 +28,15 @@ public class SplashActivity extends AppCompatActivity implements View.OnSystemUi
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    jumpToMainActivity();
-                    //jumpToIntroActivity();
+                    if(isFirstTime())
+                    {
+                        //setting sharedpreference firstTime to false
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("firstTime",false);
+                        jumpToIntroActivity();
+                    }else{
+                        jumpToMainActivity();
+                    }
                 }
             }, SPLASH_TIME);
         }
@@ -46,6 +55,12 @@ public class SplashActivity extends AppCompatActivity implements View.OnSystemUi
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);
         finish();
+    }
+
+    private boolean isFirstTime() {
+        sharedPreferences = getSharedPreferences("com.application.goalbook.firstTime",MODE_PRIVATE);
+        boolean status = sharedPreferences.getBoolean("firstTime",true);
+        return status;
     }
 
     private void initViews() {

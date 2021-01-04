@@ -32,9 +32,12 @@ import android.widget.TextView;
 import com.application.goalbook.AddGoal.AddGoalActivity;
 import com.application.goalbook.Database.Goal;
 import com.application.goalbook.Database.GoalViewModel;
+import com.application.goalbook.Database.Profile;
+import com.application.goalbook.Database.ProfileViewModel;
 import com.application.goalbook.Profile.ProfileActivity;
 import com.application.goalbook.R;
 import com.application.goalbook.Utility.Constants;
+import com.application.goalbook.Utility.ImageSaver;
 import com.application.goalbook.Utility.StringFormatter;
 import com.application.goalbook.ViewGoals.ViewGoalActivity;
 import com.application.goalbook.ViewGoals.ViewGoalsActivity;
@@ -46,7 +49,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener, Observer<List<Goal>>, Adapter_Goals.ViewGoalInterface {
+public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener,  Adapter_Goals.ViewGoalInterface {
 
     private View decorview;
     private TextView tvAllGoals, tvUsername, tvHint;
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
 
     //Viewmodel
     private GoalViewModel goalViewModel;
+    private ProfileViewModel profileViewModel;
     public static final String TAG = "MainActivity";
 
     //String Formatter
@@ -84,35 +88,69 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //initializing goalviewmodel
-        goalViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(GoalViewModel.class);
-        //setting Observer for goals list
-        goalViewModel.getAllGoals().observe(this, this);
-        //initiazling string formmater
-        stringFormatter = new StringFormatter(this);
-
+        initGoalObserver();
+        initProfileObserver();
         initViews();
         initListeners();
         getAds();
         setAds();
         setGoals();
         initAdSlider(0);
+    }
 
+    private void initGoalObserver() {
+        goalViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(GoalViewModel.class);
+        goalViewModel.getAllGoals().observe(this, new Observer<List<Goal>>() {
+            @Override
+            public void onChanged(List<Goal> goals) {
+                initGoalSlider(0);
+                pojoGoalArrayList = goals;
+                adapterGoals.submitList(goals);
+                updateDashboard(goals);
+            }
+        });
 
     }
 
-    @Override
-    public void onChanged(List<Goal> goals) {
-        initGoalSlider(0);
-        pojoGoalArrayList = goals;
-        adapterGoals.submitList(goals);
-        updateDashboard(goals);
+    private void initProfileObserver() {
+        profileViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(ProfileViewModel.class);
+
+        profileViewModel.getProfileLiveData().observe(this, new Observer<Profile>() {
+            @Override
+            public void onChanged(Profile profile) {
+                setProfile(profile);
+            }
+        });
     }
+
+    private void setProfile(Profile profile) {
+        if (profile == null)
+        {
+            return;
+        }
+        String username = profile.getName();
+        String profileImage = profile.getProfileImage();
+
+        tvUsername.setText(username);
+        //profile image
+        if (profileImage != null)
+        {
+            Bitmap bitmap = new ImageSaver(MainActivity.this).
+                    setFileName(profileImage).
+                    setDirectoryName(Constants.DIRECTORY_NAME).
+                    load();
+            civProfile.setImageBitmap(bitmap);
+        }else{
+            civProfile.setImageDrawable(getResources().getDrawable(R.drawable.ic_profile));
+        }
+    }
+
 
     private void updateDashboard(List<Goal> goals) {
         totalCount = goals.size();
         completedCount = 0;
         pendingCount = 0;
+        stringFormatter = new StringFormatter(this);
 
         for (int i = 0; i < totalCount; i++) {
             if (goals.get(i).getStatus() == Constants.STATUS_COMPLETED) {

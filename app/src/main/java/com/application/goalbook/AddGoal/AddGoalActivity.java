@@ -217,7 +217,7 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         vTag.setBackgroundColor(Color.parseColor(color));
         vTimeline.setBackgroundColor(Color.parseColor(color));
         vReminders.setBackgroundColor(Color.parseColor(color));
-        vColorPicker.setBackgroundColor(Color.parseColor(color));
+        vColorPicker.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
 
         //setting start and end date
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM YYYY");

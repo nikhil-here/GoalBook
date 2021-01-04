@@ -29,4 +29,6 @@
     <string name="alert_delete_goal_message">you won\'t be able to retrieve the goal once you delete it.</string>
     <string name="decline">CANCEL</string>
     <string name="accept">DELETE</string>
+
+
 </resources>

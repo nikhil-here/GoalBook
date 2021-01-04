@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.application.goalbook.HomeScreen.MainActivity;
 import com.application.goalbook.LoginAndRegistration.LoginActivity;
 import com.application.goalbook.R;
 
@@ -47,7 +48,7 @@ public class IntroductionActivity extends AppCompatActivity implements View.OnCl
         switch (view.getId())
         {
             case R.id.activity_slider_btn_skip:
-                Intent loginIntent = new Intent(IntroductionActivity.this, LoginActivity.class);
+                Intent loginIntent = new Intent(IntroductionActivity.this, MainActivity.class);
                 loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(loginIntent);
                 finish();
@@ -84,9 +85,9 @@ public class IntroductionActivity extends AppCompatActivity implements View.OnCl
         mCurrentPage = position;
         if (position == 2)
         {
-            btnSkip.setText("FINISH");
+            btnSkip.setText("Finish");
         }else{
-            btnSkip.setText("SKIP");
+            btnSkip.setText("Skip");
         }
     }
 

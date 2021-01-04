@@ -10,6 +10,7 @@
         android:layout_height="40dp"
         android:src="@drawable/logo"
         android:layout_marginTop="40dp"
+        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
@@ -32,10 +33,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:fontFamily="@font/roboto_bold"
+        android:fontFamily="@font/roboto"
         android:text="3 Mindmap &amp; Share"
         android:textSize="24dp"
-        android:textColor="@color/darkestGrey"
+        android:textColor="@color/blackVariant"
         app:layout_constraintBottom_toTopOf="@id/layout_intro_one_iv_illustration"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

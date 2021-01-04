@@ -79,12 +79,14 @@
                     android:transitionName="username" />
 
                 <TextView
+                    android:id="@+id/activity_profile_tv_last_updated_on"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto_medium"
-                    android:text="Reg 12 Jan 2020"
+                    tools:text="Reg 12 Jan 2020"
                     android:textSize="10dp"
+                    android:visibility="gone"
                     android:transitionName="hint" />
             </LinearLayout>
 
@@ -130,7 +132,7 @@
             <EditText
                 android:id="@+id/activity_profile_et_purpose"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:ellipsize="end"
                 android:focusable="false"
@@ -141,6 +143,7 @@
                 android:text="@string/dummy_one_liner"
                 android:textColor="@color/blackVariant"
                 android:textCursorDrawable="@null"
+                android:gravity="start"
                 android:textSize="14dp"
                 app:layout_constraintLeft_toLeftOf="@id/activity_profile_view_purpose"
                 app:layout_constraintRight_toRightOf="@id/activity_profile_tv_purpose"
@@ -177,13 +180,14 @@
             <EditText
                 android:id="@+id/activity_profile_et_vision"
                 android:layout_width="0dp"
-                android:layout_height="140dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:background="@color/white"
                 android:ellipsize="end"
                 android:focusable="false"
                 android:fontFamily="@font/roboto_medium"
                 android:inputType="textMultiLine"
+                android:gravity="start"
                 android:lineSpacingExtra="8dp"
                 android:paddingLeft="10dp"
                 android:text="@string/dummy"
@@ -225,7 +229,7 @@
             <EditText
                 android:id="@+id/activity_profile_et_mission"
                 android:layout_width="0dp"
-                android:layout_height="140dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:background="@color/white"
                 android:ellipsize="end"
@@ -234,6 +238,7 @@
                 android:inputType="textMultiLine"
                 android:lineSpacingExtra="8dp"
                 android:paddingLeft="10dp"
+                android:gravity="start"
                 android:text="@string/dummy"
                 android:textColor="@color/blackVariant"
                 android:textCursorDrawable="@null"

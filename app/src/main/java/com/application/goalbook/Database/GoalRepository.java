@@ -15,7 +15,7 @@ public class GoalRepository {
 
     public GoalRepository(Application application)
     {
-        GoalDatabase database = GoalDatabase.getInstance(application);
+        Database database = Database.getInstance(application);
         goalDao = database.goalDao();
         allGoals = goalDao.getAllGoals();
     }
