@@ -27,7 +27,6 @@
     <color name="lightBlack">#4F5257</color>
 
     <string-array name="color_palette">
-        <item>#D3D2FB</item>
         <item>#F0C1C5</item>
         <item>#DCF0F5</item>
         <item>#F4ECC0</item>

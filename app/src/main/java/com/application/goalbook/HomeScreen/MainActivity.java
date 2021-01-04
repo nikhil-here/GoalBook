@@ -104,6 +104,12 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
             @Override
             public void onChanged(List<Goal> goals) {
                 initGoalSlider(0);
+                if (goals.size() == 0)
+                {
+                    tvAllGoals.setVisibility(View.GONE);
+                }else{
+                    tvAllGoals.setVisibility(View.VISIBLE);
+                }
                 pojoGoalArrayList = goals;
                 adapterGoals.submitList(goals);
                 updateDashboard(goals);

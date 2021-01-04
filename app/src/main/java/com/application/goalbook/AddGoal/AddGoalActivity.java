@@ -230,19 +230,19 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
 
         switch (reminderFrequency) {
             case Constants.REMINDER_NONE:
-                onCheckedChanged(cgReminders, R.id.activity_add_goal_chip_reminder_none);
+                chipNone.setChecked(true);
                 break;
             case Constants.REMINDER_DAILY:
-                onCheckedChanged(cgReminders, R.id.activity_add_goal_chip_reminder_daily);
+                chipDaily.setChecked(true);
                 break;
             case Constants.REMINDER_WEEKLY:
-                onCheckedChanged(cgReminders, R.id.activity_add_goal_chip_reminder_weekly);
+                chipWeekly.setChecked(true);
                 break;
             case Constants.REMINDER_MONTHLY:
-                onCheckedChanged(cgReminders, R.id.activity_add_goal_chip_reminder_monthly);
+                chipMonthly.setChecked(true);
                 break;
             case Constants.REMINDER_YEARLY:
-                onCheckedChanged(cgReminders, R.id.activity_add_goal_chip_reminder_yearly);
+                chipYearly.setChecked(true);
                 break;
         }
     }
@@ -425,6 +425,7 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         tvTimeline.setOnClickListener(this);
         llCoverPhoto.setOnClickListener(this);
         vColorPicker.setOnClickListener(this);
+
     }
 
     //--------------------Listeners For Add Tags Start  --------------------

@@ -7,10 +7,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.room.ColumnInfo;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,6 +18,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -31,16 +31,15 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.application.goalbook.AddGoal.AddGoalActivity;
-import com.application.goalbook.Database.GoalViewModel;
 import com.application.goalbook.Database.Profile;
 import com.application.goalbook.Database.ProfileViewModel;
 import com.application.goalbook.R;
 import com.application.goalbook.Utility.Constants;
+import com.application.goalbook.Utility.HidingKeyboard;
 import com.application.goalbook.Utility.ImageSaver;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,13 +48,13 @@ import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, RadioGroup.OnCheckedChangeListener, View.OnClickListener, Observer<Profile> {
+public class ProfileActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, RadioGroup.OnCheckedChangeListener, View.OnClickListener, Observer<Profile>, View.OnFocusChangeListener {
 
     private View decorview;
-    private TextView tvLastUpdatedOn, tvUsername;
+    private TextView tvLastUpdatedOn;
     private CircleImageView civProfile;
     private View vPurpose, vVision, vMission;
-    private EditText etPurpose, etVision, etMission;
+    private EditText etPurpose, etVision, etMission, etUsername;
 
     //For Color Picker Sheet
     private RadioGroup rgColors;
@@ -74,15 +73,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
     private String colorPreference;
     private Boolean showNotification;
     private Long lastUpdatedOn;
-
     private ProfileViewModel profileViewModel;
     public static final int PICK_IMAGE_GALLERY = 121;
-    public static final String TAG = "MainActivity";
+    public static final String TAG = "ProfileActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        HidingKeyboard.setupUI(findViewById(R.id.activity_profile_cl_container), this);
 
         //initializing goalviewmodel
         profileViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(ProfileViewModel.class);
@@ -100,11 +99,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
     public void onChanged(Profile profile) {
         getProfile(profile);
         setProfile();
-        Log.i(TAG, "onChanged: profile "+profile.toString());
     }
 
     private void setProfile() {
-        tvUsername.setText(name);
+        etUsername.setText(name);
         etPurpose.setText(purpose);
         etMission.setText(mission);
         etVision.setText(vision);
@@ -207,7 +205,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
 
     private void initViews() {
         decorview = getWindow().getDecorView();
-        tvUsername = findViewById(R.id.activity_profile_tv_username);
+        etUsername = findViewById(R.id.activity_profile_et_username);
         civProfile = findViewById(R.id.activity_profile_civ_profile);
         tvLastUpdatedOn = findViewById(R.id.activity_profile_tv_last_updated_on);
         vPurpose = findViewById(R.id.activity_profile_view_purpose);
@@ -217,11 +215,85 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
         etPurpose = findViewById(R.id.activity_profile_et_purpose);
         etVision = findViewById(R.id.activity_profile_et_vision);
         etMission = findViewById(R.id.activity_profile_et_mission);
+
     }
 
     private void initListeners() {
         vColorPicker.setOnClickListener(this);
         civProfile.setOnClickListener(this);
+        etPurpose.setOnFocusChangeListener(this);
+        etVision.setOnFocusChangeListener(this);
+        etMission.setOnFocusChangeListener(this);
+        etUsername.setOnFocusChangeListener(this);
+        etUsername.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                name = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        etPurpose.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                purpose = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        etMission.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mission = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        etVision.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                vision = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
+
+
+
     }
 
 
@@ -338,5 +410,36 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
     }
 
 
+    @Override
+    public void onFocusChange(View view, boolean b) {
+        if(!b)
+        {
+            switch (view.getId())
+            {
+                case R.id.activity_profile_et_username:
+                    name = etUsername.getText().toString();
+                    saveProfile();
+                    break;
+                case R.id.activity_profile_et_purpose:
+                    purpose = etPurpose.getText().toString();
+                    saveProfile();
+                    break;
+                case R.id.activity_profile_et_vision:
+                    vision = etVision.getText().toString();
 
+                    saveProfile();
+                    break;
+                case R.id.activity_profile_et_mission:
+                    mission = etMission.getText().toString();
+                    saveProfile();
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        saveProfile();
+        super.onBackPressed();
+    }
 }

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,20 +20,27 @@ import android.widget.EditText;
 import com.application.goalbook.AddGoal.AddGoalActivity;
 import com.application.goalbook.Database.Goal;
 import com.application.goalbook.Database.GoalViewModel;
+import com.application.goalbook.Database.Profile;
+import com.application.goalbook.Database.ProfileViewModel;
 import com.application.goalbook.HomeScreen.Adapter_Goals;
 import com.application.goalbook.HomeScreen.MainActivity;
+import com.application.goalbook.Profile.ProfileActivity;
 import com.application.goalbook.R;
 import com.application.goalbook.Utility.Constants;
 import com.application.goalbook.Utility.HidingKeyboard;
+import com.application.goalbook.Utility.ImageSaver;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewGoalsActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener, Observer<List<Goal>>, Adapter_Goals.ViewGoalInterface, TextWatcher, ChipGroup.OnCheckedChangeListener {
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class ViewGoalsActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener, Adapter_Goals.ViewGoalInterface, TextWatcher, ChipGroup.OnCheckedChangeListener {
 
     private View decorview;
+    private CircleImageView civProfile;
     private ChipGroup cgStatus;
     private EditText etSearch;
     private ExtendedFloatingActionButton efabAddGoal;
@@ -40,6 +48,8 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
     private Adapter_Goals adapterGoals;
     private List<Goal> pojoGoalArrayList;
     private List<Goal> filteredList = new ArrayList<>();
+
+    private ProfileViewModel profileViewModel;
 
     //Viewmodel
     private GoalViewModel goalViewModel;
@@ -50,15 +60,56 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_goals);
         HidingKeyboard.setupUI(findViewById(R.id.activity_view_goals_cl_container), this);
-        //initializing goalviewmodel
-        goalViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(GoalViewModel.class);
-        //setting Observer for goals list
-        goalViewModel.getAllGoals().observe(this, this);
 
+        initGoalObserver();
+        initProfileObserver();
         initViews();
         initListeners();
         setGoals();
 
+    }
+
+    private void initGoalObserver() {
+        //initializing goalviewmodel
+        goalViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(GoalViewModel.class);
+        //setting Observer for goals list
+        goalViewModel.getAllGoals().observe(this, new Observer<List<Goal>>() {
+            @Override
+            public void onChanged(List<Goal> goals) {
+                pojoGoalArrayList = goals;
+                adapterGoals.setCompleteGoalList(pojoGoalArrayList);
+                adapterGoals.submitList(goals);
+            }
+        });
+    }
+
+    private void initProfileObserver() {
+        //initializing goalviewmodel
+        profileViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(ProfileViewModel.class);
+        //setting Observer for goals list
+        profileViewModel.getProfileLiveData().observe(this, new Observer<Profile>() {
+            @Override
+            public void onChanged(Profile profile) {
+                setProfile(profile);
+            }
+        });
+    }
+
+    private void setProfile(Profile profile) {
+
+        String profileImage = profile.getProfileImage();
+
+        //profile image
+        if (profileImage != null)
+        {
+            Bitmap bitmap = new ImageSaver(ViewGoalsActivity.this).
+                    setFileName(profileImage).
+                    setDirectoryName(Constants.DIRECTORY_NAME).
+                    load();
+            civProfile.setImageBitmap(bitmap);
+        }else{
+            civProfile.setImageDrawable(getResources().getDrawable(R.drawable.ic_profile));
+        }
     }
 
 
@@ -69,17 +120,20 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
                 Intent addGoalIntent = new Intent(ViewGoalsActivity.this, AddGoalActivity.class);
                 startActivity(addGoalIntent);
                 break;
+            case R.id.activity_view_goals_civ_profile:
+                jumpToProfile();
+                break;
         }
     }
 
+    private void jumpToProfile() {
+        Intent profileIntent = new Intent(ViewGoalsActivity.this, ProfileActivity.class);
+        Pair[] pairs = new Pair[1];
+        pairs[0] = new Pair<View, String>(civProfile, "profile");
+        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
+        startActivity(profileIntent, activityOptions.toBundle());
 
-    @Override
-    public void onChanged(List<Goal> goals) {
-        pojoGoalArrayList = goals;
-        adapterGoals.setCompleteGoalList(pojoGoalArrayList);
-        adapterGoals.submitList(goals);
     }
-
 
     private void setGoals() {
         adapterGoals = new Adapter_Goals(ViewGoalsActivity.this, this);
@@ -90,6 +144,7 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
 
     private void initViews() {
         decorview = getWindow().getDecorView();
+        civProfile = findViewById(R.id.activity_view_goals_civ_profile);
         rvGoals = findViewById(R.id.activity_view_goals_rv);
         etSearch = findViewById(R.id.activity_view_goals_et_search);
         efabAddGoal = findViewById(R.id.activity_view_goals_efab_add_goals);
@@ -100,6 +155,7 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
         efabAddGoal.setOnClickListener(this);
         etSearch.addTextChangedListener(this);
         cgStatus.setOnCheckedChangeListener(this);
+        civProfile.setOnClickListener(this);
     }
 
 

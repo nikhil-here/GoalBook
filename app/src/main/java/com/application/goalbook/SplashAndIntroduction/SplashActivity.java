@@ -33,6 +33,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnSystemUi
                         //setting sharedpreference firstTime to false
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putBoolean("firstTime",false);
+                        editor.commit();
                         jumpToIntroActivity();
                     }else{
                         jumpToMainActivity();
