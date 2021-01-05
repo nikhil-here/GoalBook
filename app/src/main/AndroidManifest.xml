@@ -42,6 +42,17 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <!-- Background Service-->
+        <receiver
+            android:name=".AlaramManager.ReminderService"
+            android:enabled="true" />
+
+        <!--    Admob Meta Data    -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1863658731378329~4557855201"/>
+
     </application>
 
 </manifest>

@@ -73,22 +73,17 @@
                 android:text="Ads"
                 android:textColor="@color/black" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/activity_main_rv_ads"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/component_ad" />
 
-            <LinearLayout
-                android:id="@+id/activity_main_ll_ads_slider"
-                android:layout_width="match_parent"
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/activity_main_adview_one"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:orientation="horizontal" />
+                ads:adSize="BANNER"
+                ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+            </com.google.android.gms.ads.AdView>
 
 
             <TextView
@@ -193,13 +188,20 @@
             </LinearLayout>
 
 
+
+
             <TextView
+                android:id="@+id/activity_main_tv_ongoing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="16dp"
                 android:text="On Going"
                 android:textColor="@color/black" />
+
+            <include
+                android:id="@+id/activity_main_layout_no_goal"
+                layout="@layout/component_no_goal_message"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/activity_main_rv_goals"
@@ -208,6 +210,8 @@
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/component_goal" />
+
+
 
             <LinearLayout
                 android:id="@+id/activity_main_ll_goals_slider"

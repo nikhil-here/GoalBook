@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -21,18 +22,17 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.application.goalbook.AlaramManager.AlaramHandler;
 import com.application.goalbook.Database.Profile;
 import com.application.goalbook.Database.ProfileViewModel;
 import com.application.goalbook.R;
@@ -40,6 +40,7 @@ import com.application.goalbook.Utility.Constants;
 import com.application.goalbook.Utility.HidingKeyboard;
 import com.application.goalbook.Utility.ImageSaver;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
     private View decorview;
     private TextView tvLastUpdatedOn;
     private CircleImageView civProfile;
+    private ImageView ivNotification;
     private View vPurpose, vVision, vMission;
     private EditText etPurpose, etVision, etMission, etUsername;
 
@@ -97,8 +99,18 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
 
     @Override
     public void onChanged(Profile profile) {
-        getProfile(profile);
-        setProfile();
+        if (profile != null)
+        {
+            getProfile(profile);
+            setProfile();
+            if (profile.getShowNotification() == true)
+            {
+                ivNotification.setImageResource(R.drawable.ic_notification_show);
+            }else{
+                ivNotification.setImageResource(R.drawable.ic_notification_cancel);
+            }
+        }
+
     }
 
     private void setProfile() {
@@ -215,12 +227,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
         etPurpose = findViewById(R.id.activity_profile_et_purpose);
         etVision = findViewById(R.id.activity_profile_et_vision);
         etMission = findViewById(R.id.activity_profile_et_mission);
-
+        ivNotification = findViewById(R.id.activity_profile_iv_notificaiton);
     }
 
     private void initListeners() {
         vColorPicker.setOnClickListener(this);
         civProfile.setOnClickListener(this);
+        ivNotification.setOnClickListener(this);
         etPurpose.setOnFocusChangeListener(this);
         etVision.setOnFocusChangeListener(this);
         etMission.setOnFocusChangeListener(this);
@@ -333,7 +346,54 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
             case R.id.activity_profile_civ_profile:
                 openPhotoPicker();
                 break;
+            case R.id.activity_profile_iv_notificaiton:
+                handleNotification();
+                break;
         }
+    }
+
+    private void handleNotification() {
+        String title, message;
+        if (profile.getShowNotification())
+        {
+             title = "Disable Notification ?";
+             message = "You wont receive any notifications from the app once you disabled it";
+        }else{
+             title = "Enable Notification ?";
+             message = "You will receive Goals & profile notifications";
+        }
+
+        MaterialAlertDialogBuilder handleNotificationAlert = new MaterialAlertDialogBuilder(ProfileActivity.this)
+                .setTitle(title)
+                .setMessage(message)
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Delete Cancel
+
+                    }
+                })
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        AlaramHandler alaramHandler = new AlaramHandler(ProfileActivity.this);
+                        if (profile.getShowNotification())
+                        {
+                            profile.setShowNotification(false);
+                            profileViewModel.update(profile);
+                            alaramHandler.cancelAlarm();
+                        }else{
+                            profile.setShowNotification(true);
+                            profileViewModel.update(profile);
+                            //clear all the previous alarm and set new one
+                            alaramHandler.cancelAlarm();
+                            alaramHandler.setAlaram();
+                        }
+
+                    }
+                });
+
+        handleNotificationAlert.show();
     }
 
 

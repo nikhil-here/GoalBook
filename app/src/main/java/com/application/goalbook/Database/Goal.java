@@ -9,6 +9,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.application.goalbook.Utility.Constants;
 import com.application.goalbook.Utility.StringFormatter;
 
 import org.ocpsoft.prettytime.PrettyTime;
@@ -48,6 +49,8 @@ public class Goal {
 
     @ColumnInfo(name = "reminder_frequencey")
     private int reminderFrequency;
+
+
 
 
     public Goal(String coverImage, String title, String description, ArrayList<String> tags, String color, int status, Long startDate, Long endDate, int reminderFrequency) {
@@ -194,6 +197,44 @@ public class Goal {
         }
 
         return countFormat.format(difference)+" "+periods[i]+ " "+tense;
+    }
+
+    public Boolean showNotification()
+    {
+        Date StartDate = new Date(this.startDate);
+        Date EndDate = new Date(this.endDate);
+
+        //Goal End Date is not passed and reminder is not set to none
+        if (endDate > startDate && this.reminderFrequency != Constants.REMINDER_NONE && this.status == Constants.STATUS_PENDING)
+        {
+            int days = (int)( (EndDate.getTime() - StartDate.getTime()) / (1000 * 60 * 60 * 24));
+            int divider = 1;
+            switch (this.reminderFrequency)
+            {
+                case Constants.REMINDER_DAILY :
+                    divider = 1;
+                    break;
+                case Constants.REMINDER_WEEKLY :
+                    divider = 7;
+                    break;
+                case Constants.REMINDER_MONTHLY :
+                    divider = 31;
+                    break;
+                case Constants.REMINDER_YEARLY :
+                    divider = 365;
+                    break;
+            }
+            Log.i("goal", "showNotification: days : "+days+" divider "+divider + " reminder : "+(days%divider));
+
+
+            if (days%divider == 0)
+            {
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return false;
     }
 
 }

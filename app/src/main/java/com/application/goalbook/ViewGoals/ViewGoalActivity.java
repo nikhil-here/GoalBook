@@ -23,12 +23,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.application.goalbook.AddGoal.AddGoalActivity;
+import com.application.goalbook.AlaramManager.AlaramHandler;
 import com.application.goalbook.Database.Goal;
 import com.application.goalbook.Database.GoalViewModel;
 import com.application.goalbook.HomeScreen.MainActivity;
+import com.application.goalbook.Profile.ProfileActivity;
 import com.application.goalbook.R;
 import com.application.goalbook.Utility.Constants;
 import com.application.goalbook.Utility.ImageSaver;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -39,7 +42,7 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 
-public class ViewGoalActivity extends AppCompatActivity implements Observer<Goal> {
+public class ViewGoalActivity extends AppCompatActivity implements Observer<Goal>, View.OnClickListener {
 
 
     private ImageView ivCover;
@@ -54,6 +57,8 @@ public class ViewGoalActivity extends AppCompatActivity implements Observer<Goal
     private int gid, status, reminderFrequency;
     private String title, description, coverImage, color;
 
+    private MaterialButton btnMarkPending, btnMarkCompleted;
+
     //Viewmodel
     private GoalViewModel goalViewModel;
     public static final String TAG = "ViewGoalActivity";
@@ -64,10 +69,16 @@ public class ViewGoalActivity extends AppCompatActivity implements Observer<Goal
         setContentView(R.layout.activity_view_goal);
         if (savedInstanceState == null) {
             initViews();
+            initListeners();
             initActionBar();
             getBundle();
             initObserver();
         }
+    }
+
+    private void initListeners() {
+        btnMarkPending.setOnClickListener(this);
+        btnMarkCompleted.setOnClickListener(this);
     }
 
     @Override
@@ -184,6 +195,15 @@ public class ViewGoalActivity extends AppCompatActivity implements Observer<Goal
         }
         cgReminders.addView(chip);
 
+        if (status == Constants.STATUS_PENDING)
+        {
+            btnMarkCompleted.setVisibility(View.VISIBLE);
+            btnMarkPending.setVisibility(View.GONE);
+        }else{
+            btnMarkCompleted.setVisibility(View.GONE);
+            btnMarkPending.setVisibility(View.VISIBLE);
+        }
+
 
     }
 
@@ -236,7 +256,75 @@ public class ViewGoalActivity extends AppCompatActivity implements Observer<Goal
         cgTags = findViewById(R.id.activity_view_goal_cg_tags);
         cgReminders = findViewById(R.id.activity_view_goal_cg_reminders);
         tvStartEndDate = findViewById(R.id.activity_view_goal_tv_goal_Start_end_date);
+        btnMarkCompleted = findViewById(R.id.activity_view_goal_btn_mark_completed);
+        btnMarkPending = findViewById(R.id.activity_view_goal_btn_mark_pending);
     }
 
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId())
+        {
+            case R.id.activity_view_goal_btn_mark_completed :
+                markCompleted();
+                break;
+            case R.id.activity_view_goal_btn_mark_pending :
+                markPending();
+                break;
+
+        }
+    }
+
+    private void markCompleted() {
+        String alertTitle, alertMessage;
+        alertTitle = "Mark "+title+" as Completed?";
+        alertMessage = Constants.MARK_COMPLETED_MESSAGE;
+        MaterialAlertDialogBuilder handleNotificationAlert = new MaterialAlertDialogBuilder(ViewGoalActivity.this)
+                .setTitle(alertTitle)
+                .setMessage(alertMessage)
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Delete Cancel
+                        Toasty.success(ViewGoalActivity.this,"Goal Status Updated",Toasty.LENGTH_SHORT).show();
+                    }
+                })
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        goal.setStatus(Constants.STATUS_COMPLETED);
+                        goalViewModel.update(goal);
+                        finish();
+                    }
+                });
+
+        handleNotificationAlert.show();
+    }
+
+    private void markPending() {
+        String alertTitle, alertMessage;
+        alertTitle = "Mark "+title+" as Pending?";
+        alertMessage = Constants.MARK_PENDING_MESSAGE;
+        MaterialAlertDialogBuilder handleNotificationAlert = new MaterialAlertDialogBuilder(ViewGoalActivity.this)
+                .setTitle(alertTitle)
+                .setMessage(alertMessage)
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Delete Cancel
+
+                    }
+                })
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        goal.setStatus(Constants.STATUS_PENDING);
+                        goalViewModel.update(goal);
+                        Toasty.info(ViewGoalActivity.this,"Goal Status Updated",Toasty.LENGTH_SHORT).show();
+                    }
+                });
+
+        handleNotificationAlert.show();
+
+    }
 }

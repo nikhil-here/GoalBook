@@ -216,6 +216,31 @@
             </com.google.android.material.chip.ChipGroup>
 
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/activity_view_goal_btn_mark_completed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="40dp"
+                android:text="Mark as Completed"
+                android:textColor="@color/black"
+                app:icon="@drawable/ic_check_white_24dp"
+                android:backgroundTint="@color/darkGreen"
+                app:layout_constraintTop_toBottomOf="@id/activity_view_goal_cg_reminders"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/activity_view_goal_btn_mark_pending"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="40dp"
+                android:text="Mark as Pending"
+                android:textColor="@color/black"
+                app:icon="@drawable/ic_close"
+                android:backgroundTint="@color/darkRed"
+                app:layout_constraintTop_toBottomOf="@id/activity_view_goal_cg_reminders"/>
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

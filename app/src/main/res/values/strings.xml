@@ -31,4 +31,9 @@
     <string name="accept">DELETE</string>
 
 
+    <!--  No Goals Message  -->
+    <string name="no_goal_message">Your Goals will be displayed here, Click on Add Goal button to add your First Goal</string>
+
+
+
 </resources>

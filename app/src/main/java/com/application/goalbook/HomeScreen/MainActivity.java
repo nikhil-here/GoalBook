@@ -41,6 +41,11 @@ import com.application.goalbook.Utility.ImageSaver;
 import com.application.goalbook.Utility.StringFormatter;
 import com.application.goalbook.ViewGoals.ViewGoalActivity;
 import com.application.goalbook.ViewGoals.ViewGoalsActivity;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
@@ -51,8 +56,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener,  Adapter_Goals.ViewGoalInterface {
 
-    private View decorview;
-    private TextView tvAllGoals, tvUsername, tvHint;
+    private View decorview, noGoalView;
+    private TextView tvAllGoals, tvUsername, tvHint, tvOngoing;
     private CircleImageView civProfile;
     private ExtendedFloatingActionButton efabAddGoal;
 
@@ -61,12 +66,8 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     private TextView tvTotalCount, tvCompletedCount, tvPendingCount;
 
     //For Ads
-    private TextView[] tvAdSlider;
-    private LinearLayout llAdsSlider;
-    private RecyclerView rvAds;
-    private Adapter_Ads adapterAds;
-    private ArrayList<Integer> adList;
-
+    private AdView adView1;
+    
     //For Goals
     private TextView[] tvGoalsSlider;
     private LinearLayout llGoalsSlider;
@@ -91,11 +92,19 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         initGoalObserver();
         initProfileObserver();
         initViews();
+        initAds();
         initListeners();
-        getAds();
-        setAds();
         setGoals();
-        initAdSlider(0);
+    }
+
+    private void initAds() {
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView1.loadAd(adRequest);
     }
 
     private void initGoalObserver() {
@@ -107,8 +116,10 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
                 if (goals.size() == 0)
                 {
                     tvAllGoals.setVisibility(View.GONE);
+                    noGoalView.setVisibility(View.VISIBLE);
                 }else{
                     tvAllGoals.setVisibility(View.VISIBLE);
+                    noGoalView.setVisibility(View.GONE);
                 }
                 pojoGoalArrayList = goals;
                 adapterGoals.submitList(goals);
@@ -253,60 +264,9 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         });
     }
 
-    private void setAds() {
-        adapterAds = new Adapter_Ads(adList);
-        rvAds.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        rvAds.hasFixedSize();
-        rvAds.setAdapter(adapterAds);
-        //for aligning next item to centre of horizontal rv
-        final SnapHelper bpSnapHelper = new PagerSnapHelper();
-        bpSnapHelper.attachToRecyclerView(rvAds);
-
-        rvAds.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    int scrolledPosition = ((LinearLayoutManager) rvAds.getLayoutManager())
-                            .findFirstCompletelyVisibleItemPosition();
-
-                    if (scrolledPosition == RecyclerView.NO_POSITION) {
-                        return;
-                    }
-                    initAdSlider(scrolledPosition);
-                }
-            }
-        });
-    }
 
 
-    private void getAds() {
-        adList = new ArrayList<>();
-        adList.add(R.drawable.ad1);
-        adList.add(R.drawable.ad2);
-        adList.add(R.drawable.ad1);
-        adList.add(R.drawable.ad2);
-    }
 
-    private void initAdSlider(int position) {
-        try {
-            tvAdSlider = new TextView[adList.size()];
-            llAdsSlider.removeAllViews();
-            for (int i = 0; i < tvAdSlider.length; i++) {
-                tvAdSlider[i] = new TextView(this);
-                tvAdSlider[i].setText(Html.fromHtml("&#8226;"));
-                tvAdSlider[i].setTextSize(44);
-                tvAdSlider[i].setTextColor(getResources().getColor(R.color.lightGrey));
-                llAdsSlider.addView(tvAdSlider[i]);
-            }
-            if (tvAdSlider.length > 0) {
-                tvAdSlider[position].setTextColor(getResources().getColor(R.color.blackVariant));
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "initAdSlider: " + e.getMessage());
-        }
-    }
 
     private void initGoalSlider(int position) {
 
@@ -326,21 +286,19 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
 
     private void initViews() {
         decorview = getWindow().getDecorView();
+        adView1 = findViewById(R.id.activity_main_adview_one);
         civProfile = findViewById(R.id.activity_main_civ_profile);
         tvUsername = findViewById(R.id.activity_main_tv_username);
         tvHint = findViewById(R.id.activity_main_tv_hint);
-        rvAds = findViewById(R.id.activity_main_rv_ads);
         rvGoals = findViewById(R.id.activity_main_rv_goals);
         efabAddGoal = findViewById(R.id.activity_main_efab_add_goals);
-        llAdsSlider = findViewById(R.id.activity_main_ll_ads_slider);
         llGoalsSlider = findViewById(R.id.activity_main_ll_goals_slider);
         tvAllGoals = findViewById(R.id.activity_main_tv_all_goals);
-
+        tvOngoing = findViewById(R.id.activity_main_tv_ongoing);
         tvTotalCount = findViewById(R.id.activity_main_tv_total_count);
         tvCompletedCount = findViewById(R.id.activity_main_tv_completed_count);
         tvPendingCount = findViewById(R.id.activity_main_tv_pending_count);
-
-
+        noGoalView = findViewById(R.id.activity_main_layout_no_goal);
     }
 
     private void initListeners() {

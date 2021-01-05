@@ -44,7 +44,7 @@ public abstract class Database extends RoomDatabase {
             String vision = Constants.DEFAULT_VISION;
             String mission = Constants.DEFAULT_MISSION;
             String colorPreference = Constants.DEFAULT_COLOR;
-            Boolean showNotification = true;
+            Boolean showNotification = false;
             Profile defaultProfile = new Profile(name,purpose,mission,vision,null,colorPreference,showNotification,null);
 
             new PopulateDbAsyncTask(instance).execute(defaultProfile);

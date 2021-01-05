@@ -23,6 +23,12 @@ public class Constants {
     public static final String DEFAULT_MISSION = "Define your goals, ethics, culture and norms for decision-making. Write it down.";
     public static final String DEFAULT_COLOR = "#F0C1C5";
 
+    //Notifications message
+    public static final String NOTIFICATION_MSG_ABOUT = "Read your Purpose, Vision and Mission";
+
+    //Marking Goal as Completed / Pending messages
+    public static final String MARK_COMPLETED_MESSAGE = "Don't worry you still be able to view and change the status of the goal.";
+    public static final String MARK_PENDING_MESSAGE = "Let's focus on doing more";
 
 
 }

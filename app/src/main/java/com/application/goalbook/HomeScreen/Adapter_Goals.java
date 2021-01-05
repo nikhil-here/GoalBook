@@ -118,6 +118,7 @@ public class Adapter_Goals extends ListAdapter<Goal, Adapter_Goals.ViewHolder> i
                 load();
         holder.ivCover.setImageBitmap(bitmap);
         holder.tvRemainingTime.setText(goal.getRemainingTime());
+
     }
 
 
