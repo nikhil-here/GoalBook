@@ -82,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 ads:adSize="BANNER"
-                ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+                ads:adUnitId="ca-app-pub-1863658731378329/5679365184">
             </com.google.android.gms.ads.AdView>
 
 
@@ -201,7 +201,8 @@
 
             <include
                 android:id="@+id/activity_main_layout_no_goal"
-                layout="@layout/component_no_goal_message"/>
+                layout="@layout/component_no_goal_message"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/activity_main_rv_goals"

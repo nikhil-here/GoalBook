@@ -33,8 +33,6 @@ public class ReminderService extends BroadcastReceiver {
 
     private Context context;
     private NotificationManagerCompat notificationManagerCompat;
-    private GoalViewModel goalViewModel;
-    private ProfileViewModel profileViewModel;
     private Database db;
     private LiveData<List<Goal>> allGoals;
     private LiveData<Profile> profile;

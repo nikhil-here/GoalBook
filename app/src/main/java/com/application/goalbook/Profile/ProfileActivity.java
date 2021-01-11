@@ -160,6 +160,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
 
     private  void saveProfile()
     {
+        if (name == "") {
+            name = Constants.DEFAULT_NAME;
+        }
         Profile updatedProfile = new Profile(name,purpose,mission,vision,profileImage,colorPreference,showNotification,System.currentTimeMillis());
         updatedProfile.setPid(pid);
         profileViewModel.update(updatedProfile);
