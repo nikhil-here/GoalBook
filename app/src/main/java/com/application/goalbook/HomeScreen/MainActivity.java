@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     private TextView tvTotalCount, tvCompletedCount, tvPendingCount;
 
     //For Ads
-    private AdView adView1;
+    private AdView adView1,adView2;
     
     //For Goals
     private TextView[] tvGoalsSlider;
@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         });
         AdRequest adRequest = new AdRequest.Builder().build();
         adView1.loadAd(adRequest);
+        adView2.loadAd(adRequest);
     }
 
     private void initGoalObserver() {
@@ -287,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     private void initViews() {
         decorview = getWindow().getDecorView();
         adView1 = findViewById(R.id.activity_main_adview_one);
+        adView2 = findViewById(R.id.activity_main_adview_two);
         civProfile = findViewById(R.id.activity_main_civ_profile);
         tvUsername = findViewById(R.id.activity_main_tv_username);
         tvHint = findViewById(R.id.activity_main_tv_hint);

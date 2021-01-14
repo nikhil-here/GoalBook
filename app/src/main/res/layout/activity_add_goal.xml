@@ -174,7 +174,7 @@
                 android:gravity="start"
                 android:hint="Start Writing here..."
                 android:imeOptions="actionDone"
-                android:inputType="textMultiLine"
+                android:inputType="textCapWords"
                 android:maxLines="1"
                 android:paddingVertical="10dp"
                 android:singleLine="true"
@@ -323,6 +323,19 @@
                     app:layout_constraintLeft_toLeftOf="parent" />
 
             </com.google.android.material.chip.ChipGroup>
+
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/activity_add_goal_adview"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                ads:adSize="BANNER"
+                ads:adUnitId="ca-app-pub-1863658731378329/1014259652"
+                ads:layout_constraintTop_toBottomOf="@id/activity_add_goal_cg_reminders"
+                ads:layout_constraintLeft_toLeftOf="parent"
+                ads:layout_constraintRight_toRightOf="parent"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

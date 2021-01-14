@@ -29,6 +29,11 @@ import com.application.goalbook.R;
 import com.application.goalbook.Utility.Constants;
 import com.application.goalbook.Utility.HidingKeyboard;
 import com.application.goalbook.Utility.ImageSaver;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
@@ -40,6 +45,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ViewGoalsActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener, Adapter_Goals.ViewGoalInterface, TextWatcher, ChipGroup.OnCheckedChangeListener {
 
     private View decorview;
+    private AdView adView;
     private CircleImageView civProfile;
     private ChipGroup cgStatus;
     private EditText etSearch;
@@ -64,6 +70,7 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
         initGoalObserver();
         initProfileObserver();
         initViews();
+        initAd();
         initListeners();
         setGoals();
 
@@ -142,6 +149,16 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
         rvGoals.setAdapter(adapterGoals);
     }
 
+    private void initAd() {
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+    }
+
     private void initViews() {
         decorview = getWindow().getDecorView();
         civProfile = findViewById(R.id.activity_view_goals_civ_profile);
@@ -149,6 +166,7 @@ public class ViewGoalsActivity extends AppCompatActivity implements View.OnSyste
         etSearch = findViewById(R.id.activity_view_goals_et_search);
         efabAddGoal = findViewById(R.id.activity_view_goals_efab_add_goals);
         cgStatus = findViewById(R.id.activity_view_goals_cg_status);
+        adView = findViewById(R.id.activity_view_goals_adview);
     }
 
     private void initListeners() {

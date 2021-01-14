@@ -12,12 +12,14 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -31,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.application.goalbook.AlaramManager.AlaramHandler;
 import com.application.goalbook.Database.Profile;
@@ -39,6 +42,12 @@ import com.application.goalbook.R;
 import com.application.goalbook.Utility.Constants;
 import com.application.goalbook.Utility.HidingKeyboard;
 import com.application.goalbook.Utility.ImageSaver;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -48,13 +57,16 @@ import java.util.List;
 import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import es.dmoral.toasty.Toasty;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, RadioGroup.OnCheckedChangeListener, View.OnClickListener, Observer<Profile>, View.OnFocusChangeListener {
 
     private View decorview;
+    private AdView adView;
     private TextView tvLastUpdatedOn;
     private CircleImageView civProfile;
     private ImageView ivNotification;
+    private InterstitialAd mInterstitialAd;
     private View vPurpose, vVision, vMission;
     private EditText etPurpose, etVision, etMission, etUsername;
 
@@ -77,6 +89,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
     private Long lastUpdatedOn;
     private ProfileViewModel profileViewModel;
     public static final int PICK_IMAGE_GALLERY = 121;
+    public static final int INTERSTITAL_AD_TIME = 2000;
     public static final String TAG = "ProfileActivity";
 
     @Override
@@ -91,10 +104,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
         profileViewModel.getProfileLiveData().observe(this, this);
 
         initViews();
+        initAds();
         initListeners();
         initColorPickerDialog();
         createColorPalette();
     }
+
+
 
 
     @Override
@@ -218,6 +234,33 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
         }
     }
 
+    private void initAds() {
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-1863658731378329/3313938178");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        //loading interstitalAd after specified time
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mInterstitialAd.isLoaded())
+                {
+                    mInterstitialAd.show();
+                }
+
+            }
+        }, INTERSTITAL_AD_TIME);
+    }
+
     private void initViews() {
         decorview = getWindow().getDecorView();
         etUsername = findViewById(R.id.activity_profile_et_username);
@@ -231,6 +274,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnSystemU
         etVision = findViewById(R.id.activity_profile_et_vision);
         etMission = findViewById(R.id.activity_profile_et_mission);
         ivNotification = findViewById(R.id.activity_profile_iv_notificaiton);
+        adView = findViewById(R.id.activity_profile_adview);
     }
 
     private void initListeners() {

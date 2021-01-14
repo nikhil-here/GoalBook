@@ -61,6 +61,19 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <com.google.android.gms.ads.AdView
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/activity_view_goals_adview"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginVertical="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-1863658731378329/8876437805"
+            ads:layout_constraintTop_toBottomOf="@id/activity_add_goal_cg_reminders"
+            ads:layout_constraintLeft_toLeftOf="parent"
+            ads:layout_constraintRight_toRightOf="parent"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"

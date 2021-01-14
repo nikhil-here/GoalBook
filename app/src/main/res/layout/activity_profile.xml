@@ -67,11 +67,13 @@
                     android:id="@+id/activity_profile_et_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minWidth="100dp"
                     android:fontFamily="@font/roboto_medium"
                     android:maxLength="15"
                     android:singleLine="true"
                     android:imeOptions="actionDone"
                     android:text="John Doe"
+                    android:hint="John Doe"
                     android:textColor="@color/blackVariant"
                     android:textSize="18dp"
                     android:inputType="textCapWords"
@@ -246,6 +248,20 @@
                 app:layout_constraintLeft_toLeftOf="@id/activity_profile_view_mission"
                 app:layout_constraintRight_toRightOf="@id/activity_profile_tv_vision"
                 app:layout_constraintTop_toBottomOf="@id/activity_profile_view_mission" />
+
+
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/activity_profile_adview"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                ads:adSize="BANNER"
+                ads:adUnitId="ca-app-pub-1863658731378329/7907789304"
+                ads:layout_constraintTop_toBottomOf="@id/activity_profile_et_mission"
+                ads:layout_constraintLeft_toLeftOf="parent"
+                ads:layout_constraintRight_toRightOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

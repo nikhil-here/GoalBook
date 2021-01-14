@@ -35,6 +35,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_medium"
                     android:text="Hey John!"
+                    android:hint="John Doe"
                     android:textColor="@color/blackVariant"
                     android:textSize="18dp"
                     android:transitionName="username"
@@ -234,6 +235,18 @@
                 android:gravity="center_vertical"
                 android:text="See All Your Goals"
                 android:visibility="gone" />
+
+
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/activity_main_adview_two"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                ads:adSize="BANNER"
+                ads:adUnitId="ca-app-pub-1863658731378329/2731677763">
+            </com.google.android.gms.ads.AdView>
 
 
 

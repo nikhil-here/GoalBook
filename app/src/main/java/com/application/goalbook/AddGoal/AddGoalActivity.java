@@ -24,12 +24,14 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -47,6 +49,11 @@ import com.application.goalbook.Utility.Constants;
 import com.application.goalbook.Utility.HidingKeyboard;
 import com.application.goalbook.Utility.ImageSaver;
 import com.application.goalbook.ViewGoals.ViewGoalActivity;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -61,9 +68,10 @@ import java.util.UUID;
 import es.dmoral.toasty.Toasty;
 
 
-public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCheckedChangeListener, TextWatcher, View.OnClickListener, RadioGroup.OnCheckedChangeListener, Observer<Goal> {
+public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCheckedChangeListener, TextWatcher, View.OnClickListener, RadioGroup.OnCheckedChangeListener, Observer<Goal>, TextView.OnEditorActionListener {
 
 
+    private AdView adView;
     private ImageView ivCover;
     private LinearLayout llCoverPhoto;
     private AppCompatEditText etTags;
@@ -115,6 +123,7 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
             initColorPickerDialog();
             createColorPalette();
             initViews();
+            initAds();
             initListeners();
             getBundle();
         }
@@ -425,10 +434,25 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         tvTimeline.setOnClickListener(this);
         llCoverPhoto.setOnClickListener(this);
         vColorPicker.setOnClickListener(this);
-
+        etTags.setOnEditorActionListener(this);
     }
 
     //--------------------Listeners For Add Tags Start  --------------------
+    @Override
+    public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+        boolean handled = false;
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            String tagText = etTags.getText().toString();
+            if (!tagText.isEmpty())
+            {
+                addChip(tagText);
+                etTags.setText(null);
+            }
+            handled = true;
+        }
+        return handled;
+    }
+
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
     }
@@ -463,6 +487,15 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
     }
     //--------------------Listeners For Add Tags End  --------------------
 
+    private void initAds() {
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -492,6 +525,7 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
         vTag = findViewById(R.id.activity_add_goal_view_add_tag);
         vTimeline = findViewById(R.id.activity_add_goal_view_start_end_date);
         vReminders = findViewById(R.id.activity_add_goal_view_reminder_frequencey);
+        adView = findViewById(R.id.activity_add_goal_adview);
     }
 
     private void initActionBar() {
@@ -539,4 +573,6 @@ public class AddGoalActivity extends AppCompatActivity implements ChipGroup.OnCh
 
         return true;
     }
+
+
 }
