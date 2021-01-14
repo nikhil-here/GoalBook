@@ -15,6 +15,7 @@ import android.Manifest;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -47,6 +48,12 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -54,7 +61,8 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener,  Adapter_Goals.ViewGoalInterface {
+public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener, View.OnClickListener, Adapter_Goals.ViewGoalInterface {
+
 
     private View decorview, noGoalView;
     private TextView tvAllGoals, tvUsername, tvHint, tvOngoing;
@@ -66,8 +74,8 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     private TextView tvTotalCount, tvCompletedCount, tvPendingCount;
 
     //For Ads
-    private AdView adView1,adView2;
-    
+    private AdView adView1, adView2;
+
     //For Goals
     private TextView[] tvGoalsSlider;
     private LinearLayout llGoalsSlider;
@@ -83,18 +91,35 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     //String Formatter
     private StringFormatter stringFormatter;
 
+    private static final int UPDATE_REQUEST_CODE = 201;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        checkForUpdate();
         initGoalObserver();
         initProfileObserver();
         initViews();
         initAds();
         initListeners();
         setGoals();
+    }
+
+    private void checkForUpdate() {
+
+        AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(MainActivity.this);
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE ) {
+                try {
+                    appUpdateManager.startUpdateFlowForResult(appUpdateInfo,AppUpdateType.IMMEDIATE,this,UPDATE_REQUEST_CODE);
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void initAds() {
@@ -114,11 +139,10 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
             @Override
             public void onChanged(List<Goal> goals) {
                 initGoalSlider(0);
-                if (goals.size() == 0)
-                {
+                if (goals.size() == 0) {
                     tvAllGoals.setVisibility(View.GONE);
                     noGoalView.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     tvAllGoals.setVisibility(View.VISIBLE);
                     noGoalView.setVisibility(View.GONE);
                 }
@@ -142,8 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     }
 
     private void setProfile(Profile profile) {
-        if (profile == null)
-        {
+        if (profile == null) {
             return;
         }
         String username = profile.getName();
@@ -151,14 +174,13 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
 
         tvUsername.setText(username);
         //profile image
-        if (profileImage != null)
-        {
+        if (profileImage != null) {
             Bitmap bitmap = new ImageSaver(MainActivity.this).
                     setFileName(profileImage).
                     setDirectoryName(Constants.DIRECTORY_NAME).
                     load();
             civProfile.setImageBitmap(bitmap);
-        }else{
+        } else {
             civProfile.setImageDrawable(getResources().getDrawable(R.drawable.ic_profile));
         }
     }
@@ -264,9 +286,6 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
             }
         });
     }
-
-
-
 
 
     private void initGoalSlider(int position) {
